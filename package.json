@@ -1,0 +1,26 @@
+{
+    "name": "digital_chronicles_app",
+    "private": true,
+    "version": "0.0.1",
+    "description": "",
+    "workspaces": [
+        "packages/*"
+    ],
+    "scripts": {
+        "dev:frontend": "npm run dev -w frontend",
+        "dev:backend": "npm run dev -w backend",
+        "build:frontend": "npm run build -w frontend",
+        "build:backend": "npm run build -w backend",
+        "build": "npm run build -w backend && npm run build -w frontend"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/PushToTalkMe/digital_chronicles_app.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/PushToTalkMe/digital_chronicles_app/issues"
+    },
+    "homepage": "https://github.com/PushToTalkMe/digital_chronicles_app#readme"
+}

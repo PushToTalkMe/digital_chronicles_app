@@ -1,0 +1,14 @@
+# Base
+node_modules/
+.env
+
+# Frontend
+packages/frontend/.env
+packages/frontend/dist/
+
+# Backend  
+packages/backend/.env
+packages/backend/dist/
+
+# CodeOwners
+!.github/CODEOWNERS

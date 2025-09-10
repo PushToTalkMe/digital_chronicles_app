@@ -1,1 +1,1 @@
-# digital_chronicles_app
+# Digital Chronicles App

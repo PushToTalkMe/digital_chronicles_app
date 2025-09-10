@@ -1,0 +1,5 @@
+/packages/frontend/* @nikita @pushtotalkme
+/packages/backend/* @pushtotalkme
+/package.json @nikita @pushtotalkme
+/.github/ @pushtotalkme
+/.gitignore @pushtotalkme
