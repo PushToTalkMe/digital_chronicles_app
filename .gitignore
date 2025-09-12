@@ -12,3 +12,6 @@ packages/backend/dist/
 
 # CodeOwners
 !.github/CODEOWNERS
+
+# IDE
+.idea/
