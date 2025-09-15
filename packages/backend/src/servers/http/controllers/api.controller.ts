@@ -1,3 +1,4 @@
+import { UserRole } from '@prisma/client';
 import { Request, Response } from 'express';
 
 export class ApiController {
@@ -7,9 +8,50 @@ export class ApiController {
         const apiData = {
             name: 'Digital Chronicles Server',
             version: '0.0.1',
-            documentation: '/api/docs',
+            globalPrefix: '/api',
             endpoints: {
-                auth: '/api/auth',
+                auth: {
+                    login: {
+                        route: '/auth/login',
+                        method: 'POST',
+                        body: {
+                            login: 'string',
+                            password: 'string',
+                            rememberMe: 'boolean?',
+                        },
+                        response: {
+                            success: 'boolean',
+                            data: {
+                                user: {
+                                    id: 'string',
+                                    login: 'string',
+                                    role: UserRole,
+                                },
+                                token: 'string',
+                                expiresAt: 'Date',
+                            },
+                        },
+                        setCookie: 'refreshToken=string, httpOnly',
+                    },
+                    refresh: {
+                        route: '/auth/refresh',
+                        method: 'POST',
+                        body: {},
+                        cookie: 'refreshToken=string, httpOnly',
+                        response: {
+                            success: 'boolean',
+                            data: {
+                                user: {
+                                    id: 'string',
+                                    login: 'string',
+                                    role: UserRole,
+                                },
+                                token: 'string',
+                                expiresAt: 'Date',
+                            },
+                        },
+                    },
+                },
             },
         };
         res.status(200).json({ success: true, apiData });

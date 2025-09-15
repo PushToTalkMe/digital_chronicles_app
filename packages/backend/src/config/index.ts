@@ -1,13 +1,16 @@
-import { Config } from './interface';
+import { Config, DurationString } from './interface';
 
 export const CONFIG: Config = {
     database: { url: process.env.DATABASE_URL || '' },
     jwt: {
         secret: process.env.JWT_SECRET || 'development-jwt-secret-key',
-        expiresIn: process.env.JWT_EXPIRES_IN || '24h',
+        expiresIn: (process.env.JWT_EXPIRES_IN as DurationString) || '15m',
         refreshSecret:
             process.env.JWT_REFRESH_SECRET || 'development-refresh-secret',
-        refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
+        refreshExpiresIn:
+            (process.env.JWT_REFRESH_EXPIRES_IN as DurationString) || '24h',
+        refreshRememberMeExpiresIn:
+            (process.env.JWT_REFRESH_EXPIRES_IN as DurationString) || '7d',
     },
     servers: {
         http: {

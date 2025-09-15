@@ -1,13 +1,17 @@
 import { HttpServer } from '@servers/http';
 import { ServersManagerState } from './servers.manager.interface';
 import { Servers } from '@config';
+import { DatabaseService } from '@services/database';
+import { PrismaClient } from '@prisma/client';
 
 export class ServersManager {
     private httpServer: HttpServer;
+    private database: PrismaClient;
     state: ServersManagerState;
 
-    constructor(config: Servers) {
-        this.httpServer = new HttpServer(config.http);
+    constructor(config: Servers, databaseService: DatabaseService) {
+        this.database = databaseService.getDatabase();
+        this.httpServer = new HttpServer(config.http, this.database);
         this.state = { http: false };
     }
 
