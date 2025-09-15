@@ -1,14 +1,15 @@
 import { DatabaseConfig } from '@config';
 import { PrismaClient } from '@prisma/client';
+import { DatabaseServiceInterface } from './database.interface';
 
-export class DatabaseService {
+export class DatabaseService implements DatabaseServiceInterface {
     private readonly config: DatabaseConfig;
-    private readonly prisma: PrismaClient;
+    private readonly database: PrismaClient;
     private isConnected = false;
 
     constructor(config: DatabaseConfig) {
         this.config = config;
-        this.prisma = new PrismaClient({
+        this.database = new PrismaClient({
             datasources: { db: { url: this.config.url } },
         });
     }
@@ -16,8 +17,8 @@ export class DatabaseService {
     public async connect() {
         try {
             console.info('Соединение с БД...');
-            await this.prisma.$connect();
-            await this.prisma.$queryRaw`SELECT 1`;
+            await this.database.$connect();
+            await this.database.$queryRaw`SELECT 1`;
             this.isConnected = true;
         } catch (error) {
             console.info('Ошибка соединения c БД:\n');
@@ -28,5 +29,9 @@ export class DatabaseService {
 
     public getIsConnected() {
         return this.isConnected;
+    }
+
+    public getDatabase() {
+        return this.database;
     }
 }
