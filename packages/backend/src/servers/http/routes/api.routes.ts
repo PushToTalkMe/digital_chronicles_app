@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { ApiController } from '../controllers';
 import { authRoutes } from './auth.routes';
+import { facilityRoutes } from './facility.routes';
 
 export const apiRoutes = Router();
 
@@ -9,6 +10,7 @@ const apiController = new ApiController();
 apiRoutes.get('/info', (req, res) => apiController.getInfo(req, res));
 
 apiRoutes.use('/auth', authRoutes);
+apiRoutes.use('/facility', facilityRoutes);
 
 apiRoutes.use(/\*/, (_req, res) => {
     res.status(404).json({

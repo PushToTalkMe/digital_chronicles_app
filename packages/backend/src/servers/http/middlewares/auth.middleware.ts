@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { JwtService } from '@services/auth';
+import { UserRole } from '@prisma/client';
 
 export class AuthMiddleware {
     private readonly jwtService: JwtService;
@@ -46,7 +47,10 @@ export class AuthMiddleware {
                 return;
             }
 
-            req.authenticatedUser = userRecord;
+            req.authenticatedUser = {
+                id: userRecord.id,
+                role: userRecord.role,
+            };
 
             next();
         } catch (error) {
@@ -70,7 +74,7 @@ export class AuthMiddleware {
             return;
         }
 
-        if (!req.authenticatedUser.isAdmin()) {
+        if (req.authenticatedUser.role !== UserRole.ADMIN) {
             res.status(403).json({
                 success: false,
                 error: 'Недостаточно прав доступа',
