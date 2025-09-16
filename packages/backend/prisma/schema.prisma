@@ -16,12 +16,44 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt @default(now())
 
+  facility Facility[]
+
   @@map("users")
 }
+
+model Facility {
+  id  String @id @default(cuid())
+  title String  @default("Объект")
+  status StatusFacility
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt @default(now())
+
+  user  User[]
+  polygon Polygon?
+  
+  @@map("facilities")
+}
+
+model Polygon {
+  id          String   @id @default(cuid())
+  coordinates Json  
+  area        Float?
+
+  facilityId  String @unique
+  facility    Facility @relation(fields: [facilityId], references: [id])
+}
+
+
 
 enum UserRole {
   ADMIN
   CUSTOMER
   TECHNICAL_CUSTOMER
   CONTRACTOR
+}
+
+
+enum StatusFacility {
+  IN_PROCESS
+  DONE
 }

@@ -1,15 +1,20 @@
 import { Request } from 'express';
-import { PrismaClient, User } from '@prisma/client';
+import { PrismaClient, User, UserRole } from '@prisma/client';
 
 declare global {
     namespace Express {
         interface Request {
             database: PrismaClient;
-            authenticatedUser?: UserEntity;
+            authenticatedUser?: AuthenticatedUser;
         }
     }
 }
 
 export interface AuthenticatedRequest extends Request {
-    authenticatedUser: UserEntity;
+    authenticatedUser: AuthenticatedUser;
+}
+
+export interface AuthenticatedUser {
+    id: string;
+    role: UserRole;
 }

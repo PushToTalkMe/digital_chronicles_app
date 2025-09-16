@@ -54,6 +54,6 @@ export class ApiController {
                 },
             },
         };
-        res.status(200).json({ success: true, apiData });
+        res.status(200).json({ success: true, data: apiData });
     }
 }

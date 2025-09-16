@@ -1,3 +1,27 @@
 import { Router } from 'express';
+import { FacilityController } from '../controllers';
+import { AuthMiddleware } from '../middlewares';
+import { GpsMiddleware } from '../middlewares/gps.middleware';
+import { AuthenticatedRequest } from 'src/types/express';
 
 export const facilityRoutes = Router();
+
+const facilityController = new FacilityController();
+const authMiddleware = new AuthMiddleware();
+const gpsMiddleware = new GpsMiddleware();
+
+facilityRoutes.get(
+    '/',
+    (req, res, next) => authMiddleware.authenticate(req, res, next),
+    (req, res) =>
+        facilityController.getFacilities(req as AuthenticatedRequest, res)
+);
+
+facilityRoutes.post(
+    '/:id',
+    (req, res, next) => authMiddleware.authenticate(req, res, next),
+    (req, res, next) =>
+        gpsMiddleware.checkCoordinates(req as AuthenticatedRequest, res, next),
+    (req, res) =>
+        facilityController.getFacility(req as AuthenticatedRequest, res)
+);
