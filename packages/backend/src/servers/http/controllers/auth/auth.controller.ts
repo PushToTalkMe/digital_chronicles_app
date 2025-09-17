@@ -125,7 +125,7 @@ export class AuthController {
         }
     }
 
-    public logout(req: Request, res: Response) {}
+    public logout(_req: Request, _res: Response) {}
 
-    public getMe(req: Request, res: Response) {}
+    public getMe(_req: Request, _res: Response) {}
 }

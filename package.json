@@ -11,7 +11,11 @@
         "dev:backend": "npm run dev -w backend",
         "build:frontend": "npm run build -w frontend",
         "build:backend": "npm run build -w backend",
-        "build": "npm run build -w backend && npm run build -w frontend"
+        "build": "npm run build -w backend && npm run build -w frontend",
+        "start:backend": "npm run start -w backend",
+        "start:frontend": "npm run preview -w frontend",
+        "docker:build": "docker-compose up --build",
+        "docker:build:log": "docker build --no-cache --progress=plain -f packages/backend/Dockerfile ."
     },
     "repository": {
         "type": "git",
