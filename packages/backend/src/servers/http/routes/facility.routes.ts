@@ -1,14 +1,14 @@
 import { Router } from 'express';
 import { FacilityController } from '../controllers';
 import { AuthMiddleware } from '../middlewares';
-import { GpsMiddleware } from '../middlewares/gps.middleware';
+// import { GpsMiddleware } from '../middlewares/gps.middleware';
 import { AuthenticatedRequest } from 'src/types/express';
 
 export const facilityRoutes = Router();
 
 const facilityController = new FacilityController();
 const authMiddleware = new AuthMiddleware();
-const gpsMiddleware = new GpsMiddleware();
+// const gpsMiddleware = new GpsMiddleware();
 
 facilityRoutes.get(
     '/',

@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import { JwtService } from '@services/auth';
-import { UserRole } from '@prisma/client';
 
 export class AuthMiddleware {
     private readonly jwtService: JwtService;
@@ -59,30 +58,6 @@ export class AuthMiddleware {
                 error: 'Внутренняя ошибка сервера',
             });
         }
-    };
-
-    public requireAdmin = (
-        req: Request,
-        res: Response,
-        next: NextFunction
-    ): void => {
-        if (!req.authenticatedUser) {
-            res.status(401).json({
-                success: false,
-                error: 'Пользователь не аутентифицирован',
-            });
-            return;
-        }
-
-        if (req.authenticatedUser.role !== UserRole.ADMIN) {
-            res.status(403).json({
-                success: false,
-                error: 'Недостаточно прав доступа',
-            });
-            return;
-        }
-
-        next();
     };
 
     public rateLimit = (
