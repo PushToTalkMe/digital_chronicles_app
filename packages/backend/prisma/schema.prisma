@@ -16,7 +16,8 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt @default(now())
 
-  facility Facility[]
+  facilities Facility[]
+  actsOfOpeningFacilities ActOfOpeningFacility[]
 
   @@map("users")
 }
@@ -25,28 +26,66 @@ model Facility {
   id  String @id @default(cuid())
   title String  @default("Объект")
   status StatusFacility
+  plannedStartAt    DateTime
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt @default(now())
 
   user  User[]
   polygon Polygon?
+  actOfOpening ActOfOpeningFacility?
   
   @@map("facilities")
 }
 
 model Polygon {
-  id          String   @id @default(cuid())
   coordinates Json  
   area        Float?
 
   facilityId  String @unique
   facility    Facility @relation(fields: [facilityId], references: [id])
+
+  @@map("polygons")
 }
 
+model ActOfOpeningFacility {
+  id        String @id @default(cuid())
+  facilityId  String @unique
+  facility    Facility @relation(fields: [facilityId], references: [id])
+  user  User[]
+  checkList CheckListActOfOpeningFacility?
 
+  @@map("actsOfOpeningFacility")
+}
+
+model CheckListActOfOpeningFacility {
+  id    Int     @id @default(autoincrement())
+  facilityId  String @unique
+  title String
+
+  items ChecklistItem[]
+  actOfOpeningFacility ActOfOpeningFacility @relation(fields: [facilityId], references: [id])
+
+   @@map("checkListsForActOfOpening")
+}
+
+model ChecklistItem {
+  id          Int      @id @default(autoincrement())
+  text        String
+  description String?
+  completed   CheckListItemStatus
+  
+  checklistId Int?
+  checklist   CheckListActOfOpeningFacility? @relation(fields: [checklistId], references: [id])
+  
+  parentId    Int?
+  parent      ChecklistItem? @relation("Subitems", fields: [parentId], references: [id])
+  
+  subitems    ChecklistItem[] @relation("Subitems")
+
+  @@map("checkListItemsForActOfOpening")
+}
 
 enum UserRole {
-  ADMIN
   CUSTOMER
   TECHNICAL_CUSTOMER
   CONTRACTOR
@@ -54,6 +93,14 @@ enum UserRole {
 
 
 enum StatusFacility {
+  WAITING
   IN_PROCESS
   DONE
+}
+
+enum CheckListItemStatus {
+  YES
+  NO
+  OPTIONAL
+  NULL
 }

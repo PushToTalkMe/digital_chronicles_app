@@ -20,8 +20,13 @@ facilityRoutes.get(
 facilityRoutes.post(
     '/:id',
     (req, res, next) => authMiddleware.authenticate(req, res, next),
-    (req, res, next) =>
-        gpsMiddleware.checkCoordinates(req as AuthenticatedRequest, res, next),
     (req, res) =>
         facilityController.getFacility(req as AuthenticatedRequest, res)
+);
+
+facilityRoutes.post(
+    '/activate/:id',
+    (req, res, next) => authMiddleware.authenticate(req, res, next),
+    (req, res) =>
+        facilityController.activateFacility(req as AuthenticatedRequest, res)
 );
