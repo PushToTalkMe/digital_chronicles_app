@@ -85,9 +85,9 @@ export class GpsMiddleware {
                 include: { polygon: { where: { facilityId } } },
             });
 
-            const resultCheck = this.checkClientInPolygonWithAccuracy(
+            const resultCheck = this.checkClientInMultiPolygonWithAccuracy(
                 location,
-                facility?.polygon?.coordinates as number[][]
+                facility?.polygon?.coordinates as number[][][][]
             );
 
             if (!resultCheck) {
@@ -107,11 +107,29 @@ export class GpsMiddleware {
         }
     }
 
+    private checkClientInMultiPolygonWithAccuracy(
+        location: LocationGPS,
+        multiPolygon: number[][][][]
+    ) {
+        for (const polygon of multiPolygon) {
+            const checkResult = this.checkClientInPolygonWithAccuracy(
+                location,
+                polygon
+            );
+
+            if (checkResult) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private checkClientInPolygonWithAccuracy(
         location: LocationGPS,
-        polygon: number[][]
+        polygon: number[][][]
     ) {
-        const point: [number, number] = [location.lng, location.lat];
+        const point: [number, number] = [location.lat, location.lng];
 
         if (location.accuracy > 0) {
             const testPoints = this.generateAccuracyCirclePoints(
@@ -130,11 +148,9 @@ export class GpsMiddleware {
 
             const certainty = pointsInside / testPoints.length;
 
-            if (certainty > 0.3) {
-                return true;
-            } else {
-                return false;
-            }
+            const CERTAINTY_THRESHOLD = 0.3;
+
+            return certainty > CERTAINTY_THRESHOLD;
         } else {
             return this.isClientInPolygon(point, polygon);
         }
@@ -168,14 +184,18 @@ export class GpsMiddleware {
 
     private isClientInPolygon(
         point: [number, number],
-        polygon: number[][]
+        polygon: number[][][]
     ): boolean {
+        const externalRing = polygon[0];
         let inside = false;
-        for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-            const xi = polygon[i][0],
-                yi = polygon[i][1];
-            const xj = polygon[j][0],
-                yj = polygon[j][1];
+
+        for (
+            let i = 0, j = externalRing.length - 1;
+            i < externalRing.length;
+            j = i, i++
+        ) {
+            const [xi, yi] = externalRing[i];
+            const [xj, yj] = externalRing[j];
 
             const intersect =
                 yi > point[1] !== yj > point[1] &&
@@ -183,6 +203,35 @@ export class GpsMiddleware {
 
             if (intersect) inside = !inside;
         }
-        return inside;
+
+        if (!inside) {
+            return false;
+        }
+
+        for (let i = 1; i < polygon.length; i++) {
+            const holeRing = polygon[i];
+            let inHole = false;
+
+            for (
+                let k = 0, l = holeRing.length - 1;
+                k < holeRing.length;
+                l = k, k++
+            ) {
+                const [xk, yk] = holeRing[k];
+                const [xl, yl] = holeRing[l];
+
+                const intersect =
+                    yk > point[1] !== yl > point[1] &&
+                    point[0] < ((xl - xk) * (point[1] - yk)) / (yl - yk) + xk;
+
+                if (intersect) inHole = !inHole;
+            }
+
+            if (inHole) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
