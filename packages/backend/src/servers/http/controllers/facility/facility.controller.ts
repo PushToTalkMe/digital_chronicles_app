@@ -300,6 +300,114 @@ export class FacilityController {
         }
     }
 
+    public async addContractorToFacility(
+        req: AuthenticatedRequest,
+        res: Response
+    ) {
+        const { id: facilityId } = req.params;
+        const body = req.body;
+
+        if (req.authenticatedUser.role !== UserRole.CUSTOMER) {
+            res.status(403).json({
+                success: false,
+                data: {
+                    message: 'Нет прав для добавления подрядчиков',
+                },
+            });
+            return;
+        }
+
+        try {
+            const facility = await req.database.facility.findUnique({
+                where: {
+                    id: facilityId,
+                    user: { some: { id: req.authenticatedUser.id } },
+                },
+                include: {
+                    user: true,
+                },
+            });
+
+            if (!facility) {
+                res.status(400).json({
+                    success: false,
+                    data: { message: 'Объект принадлежит другому заказчику' },
+                });
+                return;
+            }
+
+            if (!body) {
+                res.status(400).json({
+                    success: false,
+                    data: {
+                        message:
+                            'Нужен body с объектом contractor: {id: string}',
+                    },
+                });
+                return;
+            }
+
+            const contractor = body.contractor as {
+                id: string;
+            };
+
+            if (!contractor) {
+                res.status(400).json({
+                    success: false,
+                    data: {
+                        message:
+                            'Нужен body с объектом contractor: {id: string}',
+                    },
+                });
+                return;
+            }
+
+            const userCustomer = await req.database.user.findUnique({
+                where: { id: contractor.id || '' },
+            });
+
+            if (!userCustomer) {
+                res.status(400).json({
+                    success: false,
+                    data: {
+                        message: 'Данного подрядчика не существует',
+                    },
+                });
+                return;
+            }
+
+            if (facility.user.find((user) => user.id === contractor.id)) {
+                res.status(400).json({
+                    success: false,
+                    data: {
+                        message:
+                            'Данный подрядчик уже добавлен к этому объекту',
+                    },
+                });
+                return;
+            }
+
+            await req.database.facility.update({
+                where: { id: facilityId },
+                data: {
+                    user: { connect: { id: contractor.id } },
+                },
+            });
+
+            res.status(200).json({
+                success: true,
+                data: {
+                    message: 'Подрядчик успешно добавлен к объекту',
+                },
+            });
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                error: error instanceof Error ? error.message : error,
+            });
+        }
+    }
+
     public async sendActOfOpening(req: AuthenticatedRequest, res: Response) {
         const { id: facilityId } = req.params;
         const body = req.body;
@@ -454,11 +562,13 @@ export class FacilityController {
                 }
             }
 
-            req.database.actOfOpeningFacility.update({
-                where: { facilityId },
+            await req.database.facility.update({
+                where: { id: facilityId },
                 data: {
-                    status: StatusActOfOpening.DONE,
                     user: { connect: { id: req.authenticatedUser.id } },
+                    actOfOpening: {
+                        update: { status: StatusActOfOpening.DONE },
+                    },
                 },
             });
 

@@ -44,3 +44,13 @@ facilityRoutes.post(
     (req, res) =>
         facilityController.approveActOfOpening(req as AuthenticatedRequest, res)
 );
+
+facilityRoutes.post(
+    '/addContractorToFacility/:id',
+    (req, res, next) => authMiddleware.authenticate(req, res, next),
+    (req, res) =>
+        facilityController.addContractorToFacility(
+            req as AuthenticatedRequest,
+            res
+        )
+);
