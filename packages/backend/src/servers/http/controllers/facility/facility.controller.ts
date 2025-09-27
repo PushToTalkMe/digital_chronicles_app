@@ -100,6 +100,16 @@ export class FacilityController {
                 },
             });
 
+            if (!facility) {
+                res.status(400).json({
+                    success: false,
+                    data: {
+                        message: 'Объект не найден',
+                    },
+                });
+                return;
+            }
+
             res.status(200).json({
                 success: true,
                 data: facility,
@@ -377,6 +387,87 @@ export class FacilityController {
                 console.log(error);
                 throw new Error('Ошибка при обновлении акта открытия');
             }
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                error: error instanceof Error ? error.message : error,
+            });
+        }
+    }
+
+    public async approveActOfOpening(req: AuthenticatedRequest, res: Response) {
+        const { id: facilityId } = req.params;
+
+        if (req.authenticatedUser.role !== UserRole.TECHNICAL_CUSTOMER) {
+            res.status(403).json({
+                success: false,
+                data: {
+                    message: 'Нет прав для подтверждения акта открытия объекта',
+                },
+            });
+            return;
+        }
+
+        try {
+            const facility = await req.database.facility.findUnique({
+                where: {
+                    id: facilityId,
+                },
+                include: { user: true, actOfOpening: true },
+            });
+
+            if (!facility) {
+                res.status(400).json({
+                    success: false,
+                    data: {
+                        message: 'Объект не найден',
+                    },
+                });
+                return;
+            }
+
+            if (facility) {
+                if (
+                    facility.user.find(
+                        (user) =>
+                            user.role === UserRole.TECHNICAL_CUSTOMER &&
+                            user.id !== req.authenticatedUser.id
+                    )
+                ) {
+                    res.status(400).json({
+                        success: false,
+                        data: {
+                            message:
+                                'Акт открытия подтвержден другим инспектором',
+                        },
+                    });
+                    return;
+                }
+                if (!facility.actOfOpening) {
+                    res.status(400).json({
+                        success: false,
+                        data: {
+                            message: 'Акт открытия ещё не инициализирован',
+                        },
+                    });
+                    return;
+                }
+            }
+
+            req.database.actOfOpeningFacility.update({
+                where: { facilityId },
+                data: {
+                    status: StatusActOfOpening.DONE,
+                    user: { connect: { id: req.authenticatedUser.id } },
+                },
+            });
+
+            res.status(200).json({
+                success: true,
+                data: {
+                    message: 'Акт успешно подтверждён',
+                },
+            });
         } catch (error) {
             res.status(500).json({
                 success: false,

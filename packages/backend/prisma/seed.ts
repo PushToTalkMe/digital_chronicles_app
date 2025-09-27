@@ -8,6 +8,8 @@ const USERS = [
         role: UserRole.CUSTOMER,
         passwordHash:
             '$2a$12$H7tTg5BwIUpT9Qt5g8XGwe4GoNgCXKk7exbb2OfNiIVidu6exEAze',
+        firstName: 'Заказчик',
+        lastName: 'Заказчиков',
     },
     {
         id: uuidv4(),
@@ -15,6 +17,8 @@ const USERS = [
         role: UserRole.TECHNICAL_CUSTOMER,
         passwordHash:
             '$2a$12$H7tTg5BwIUpT9Qt5g8XGwe4GoNgCXKk7exbb2OfNiIVidu6exEAze',
+        firstName: 'Инспектор',
+        lastName: 'Инспекторов',
     },
     {
         id: uuidv4(),
@@ -22,6 +26,8 @@ const USERS = [
         role: UserRole.CONTRACTOR,
         passwordHash:
             '$2a$12$H7tTg5BwIUpT9Qt5g8XGwe4GoNgCXKk7exbb2OfNiIVidu6exEAze',
+        firstName: 'Подрядчик',
+        lastName: 'Подрядчиков',
     },
 ];
 

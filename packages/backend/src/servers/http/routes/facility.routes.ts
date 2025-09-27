@@ -37,3 +37,10 @@ facilityRoutes.post(
     (req, res) =>
         facilityController.sendActOfOpening(req as AuthenticatedRequest, res)
 );
+
+facilityRoutes.post(
+    '/approveActOfOpening/:id',
+    (req, res, next) => authMiddleware.authenticate(req, res, next),
+    (req, res) =>
+        facilityController.approveActOfOpening(req as AuthenticatedRequest, res)
+);
