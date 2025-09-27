@@ -30,3 +30,10 @@ facilityRoutes.post(
     (req, res) =>
         facilityController.activateFacility(req as AuthenticatedRequest, res)
 );
+
+facilityRoutes.post(
+    '/sendActOfOpening/:id',
+    (req, res, next) => authMiddleware.authenticate(req, res, next),
+    (req, res) =>
+        facilityController.sendActOfOpening(req as AuthenticatedRequest, res)
+);

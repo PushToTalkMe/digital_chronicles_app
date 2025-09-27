@@ -49,6 +49,7 @@ model Polygon {
 
 model ActOfOpeningFacility {
   id        String @id @default(cuid())
+  status  StatusActOfOpening
   facilityId  String @unique
   facility    Facility @relation(fields: [facilityId], references: [id])
   user  User[]
@@ -94,6 +95,12 @@ enum UserRole {
 
 enum StatusFacility {
   WAITING
+  IN_PROCESS
+  DONE
+}
+
+enum StatusActOfOpening {
+  WAITING_APPROVE
   IN_PROCESS
   DONE
 }

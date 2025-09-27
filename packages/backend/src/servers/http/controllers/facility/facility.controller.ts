@@ -1,4 +1,9 @@
-import { CheckListItemStatus, StatusFacility, UserRole } from '@prisma/client';
+import {
+    CheckListItemStatus,
+    StatusActOfOpening,
+    StatusFacility,
+    UserRole,
+} from '@prisma/client';
 import { Response } from 'express';
 import { AuthenticatedRequest } from 'src/types/express';
 import { v4 as uuidv4 } from 'uuid';
@@ -122,7 +127,7 @@ export class FacilityController {
             if (facility?.status !== StatusFacility.WAITING) {
                 res.status(400).json({
                     success: false,
-                    data: { message: 'Объект недоступен для активации' },
+                    data: { message: 'Объект уже активирован' },
                 });
                 return;
             }
@@ -137,6 +142,7 @@ export class FacilityController {
                     actOfOpening: {
                         create: {
                             id: uuidv4(),
+                            status: StatusActOfOpening.IN_PROCESS,
                             user: { connect: { id: req.authenticatedUser.id } },
                             checkList: {
                                 create: {
@@ -274,6 +280,101 @@ export class FacilityController {
             res.status(500).json({
                 success: false,
                 error,
+            });
+        }
+    }
+
+    public async sendActOfOpening(req: AuthenticatedRequest, res: Response) {
+        const { id: facilityId } = req.params;
+        const body = req.body;
+
+        if (req.authenticatedUser.role !== UserRole.CUSTOMER) {
+            res.status(403).json({
+                success: false,
+                data: {
+                    message: 'Нет прав для отправки акта открытия объекта',
+                },
+            });
+            return;
+        }
+
+        try {
+            const facility = await req.database.facility.findUnique({
+                where: {
+                    id: facilityId,
+                    user: { some: { id: req.authenticatedUser.id } },
+                },
+            });
+
+            if (!facility) {
+                res.status(400).json({
+                    success: false,
+                    data: { message: 'Объект принадлежит другому заказчику' },
+                });
+                return;
+            }
+
+            if (!body) {
+                res.status(400).json({
+                    success: false,
+                    data: {
+                        message:
+                            'Нужен body с массивом subitems: {id: number, completed: "YES" | "NO" | "OPTIONAL" | "NULL"}[]',
+                    },
+                });
+                return;
+            }
+
+            const subitemsToUpdate = body.subitems as {
+                id: number;
+                completed: CheckListItemStatus;
+            }[];
+
+            if (!subitemsToUpdate) {
+                res.status(400).json({
+                    success: false,
+                    data: {
+                        message:
+                            'Нужен body с массивом subitems: {id: number, completed: "YES" | "NO" | "OPTIONAL" | "NULL"}[]',
+                    },
+                });
+                return;
+            }
+
+            try {
+                const result = await req.database.$transaction([
+                    ...subitemsToUpdate.map((subitem) =>
+                        req.database.checklistItem.update({
+                            where: { id: subitem.id },
+                            data: { completed: subitem.completed },
+                        })
+                    ),
+                    req.database.actOfOpeningFacility.update({
+                        where: { facilityId },
+                        data: {
+                            status: StatusActOfOpening.WAITING_APPROVE,
+                        },
+                        include: {
+                            checkList: {
+                                include: {
+                                    items: { include: { subitems: true } },
+                                },
+                            },
+                        },
+                    }),
+                ]);
+                res.status(200).json({
+                    success: true,
+                    data: result[result.length - 1],
+                });
+            } catch (error) {
+                console.log(error);
+                throw new Error('Ошибка при обновлении акта открытия');
+            }
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                error: error instanceof Error ? error.message : error,
             });
         }
     }

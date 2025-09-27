@@ -4,7 +4,7 @@ export const CONFIG: Config = {
     database: { url: process.env.DATABASE_URL || '' },
     jwt: {
         secret: process.env.JWT_SECRET || 'development-jwt-secret-key',
-        expiresIn: (process.env.JWT_EXPIRES_IN as DurationString) || '15m',
+        expiresIn: (process.env.JWT_EXPIRES_IN as DurationString) || '1h',
         refreshSecret:
             process.env.JWT_REFRESH_SECRET || 'development-refresh-secret',
         refreshExpiresIn:
