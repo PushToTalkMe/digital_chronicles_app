@@ -11,6 +11,8 @@ model User {
   id           String   @id @default(cuid())
   email        String  @default("")
   login        String  @unique
+  firstName    String
+  lastName     String
   passwordHash String
   role         UserRole
   createdAt    DateTime @default(now())
@@ -33,6 +35,7 @@ model Facility {
   user  User[]
   polygon Polygon?
   actOfOpening ActOfOpeningFacility?
+  listOfWorks ListOfWork[]
   
   @@map("facilities")
 }
@@ -86,6 +89,33 @@ model ChecklistItem {
   @@map("checkListItemsForActOfOpening")
 }
 
+model ListOfWork {
+  id          Int      @id @default(autoincrement())
+  title       String
+  count       Float
+  measurement ListOfMeasurement
+  startAt     DateTime
+  endAt       DateTime
+
+  facilityId String
+  facility Facility @relation(fields: [facilityId], references: [id])
+
+  materials Material[]
+
+  @@map("listOfWorks")
+}
+
+model Material {
+  id  Int @id @default(autoincrement())
+  name String
+  volume String
+
+  listOfWorkId Int
+  listOfWork ListOfWork @relation(fields: [listOfWorkId], references: [id])
+
+  @@map("materials")
+}
+
 enum UserRole {
   CUSTOMER
   TECHNICAL_CUSTOMER
@@ -110,4 +140,10 @@ enum CheckListItemStatus {
   NO
   OPTIONAL
   NULL
+}
+
+enum ListOfMeasurement {
+  RUNNING_METER
+  SQUARE_METER
+  PIECE
 }

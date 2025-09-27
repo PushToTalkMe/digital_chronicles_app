@@ -35,9 +35,15 @@ export class FacilityController {
                     req.authenticatedUser.role === UserRole.CONTRACTOR
                         ? { user: { some: { id: req.authenticatedUser.id } } }
                         : {},
-                include: {
-                    polygon: true,
-                },
+                include:
+                    req.authenticatedUser.role !== UserRole.CONTRACTOR
+                        ? {
+                              polygon: true,
+                              actOfOpening: { select: { status: true } },
+                          }
+                        : {
+                              polygon: true,
+                          },
                 orderBy: { createdAt: 'desc' },
                 skip: offset,
                 take: limit,
@@ -82,17 +88,41 @@ export class FacilityController {
                         : { id: facilityId },
                 include: {
                     polygon: true,
-                    actOfOpening: {
-                        include: {
-                            checkList: {
-                                include: {
-                                    items: { include: { subitems: true } },
-                                },
-                            },
-                        },
+                    actOfOpening:
+                        req.authenticatedUser.role === UserRole.CUSTOMER ||
+                        req.authenticatedUser.role ===
+                            UserRole.TECHNICAL_CUSTOMER
+                            ? {
+                                  include: {
+                                      checkList: {
+                                          include: {
+                                              items: {
+                                                  include: { subitems: true },
+                                              },
+                                          },
+                                      },
+                                  },
+                              }
+                            : false,
+                    listOfWorks: {
+                        include: { materials: true },
                     },
+                    user:
+                        req.authenticatedUser.role === UserRole.CUSTOMER
+                            ? { where: { role: UserRole.CONTRACTOR } }
+                            : false,
                 },
             });
+
+            if (!facility) {
+                res.status(400).json({
+                    success: false,
+                    data: {
+                        message: 'Объект не найден или недоступен',
+                    },
+                });
+                return;
+            }
 
             res.status(200).json({
                 success: true,
@@ -124,7 +154,17 @@ export class FacilityController {
                 },
             });
 
-            if (facility?.status !== StatusFacility.WAITING) {
+            if (!facility) {
+                res.status(400).json({
+                    success: false,
+                    data: {
+                        message: 'Объект не найден',
+                    },
+                });
+                return;
+            }
+
+            if (facility.status !== StatusFacility.WAITING) {
                 res.status(400).json({
                     success: false,
                     data: { message: 'Объект уже активирован' },
@@ -260,15 +300,29 @@ export class FacilityController {
                 },
                 include: {
                     polygon: true,
-                    actOfOpening: {
-                        include: {
-                            checkList: {
-                                include: {
-                                    items: { include: { subitems: true } },
-                                },
-                            },
-                        },
+                    actOfOpening:
+                        req.authenticatedUser.role === UserRole.CUSTOMER ||
+                        req.authenticatedUser.role ===
+                            UserRole.TECHNICAL_CUSTOMER
+                            ? {
+                                  include: {
+                                      checkList: {
+                                          include: {
+                                              items: {
+                                                  include: { subitems: true },
+                                              },
+                                          },
+                                      },
+                                  },
+                              }
+                            : false,
+                    listOfWorks: {
+                        include: { materials: true },
                     },
+                    user:
+                        req.authenticatedUser.role === UserRole.CUSTOMER
+                            ? { where: { role: UserRole.CONTRACTOR } }
+                            : false,
                 },
             });
 
@@ -280,6 +334,114 @@ export class FacilityController {
             res.status(500).json({
                 success: false,
                 error,
+            });
+        }
+    }
+
+    public async addContractorToFacility(
+        req: AuthenticatedRequest,
+        res: Response
+    ) {
+        const { id: facilityId } = req.params;
+        const body = req.body;
+
+        if (req.authenticatedUser.role !== UserRole.CUSTOMER) {
+            res.status(403).json({
+                success: false,
+                data: {
+                    message: 'Нет прав для добавления подрядчиков',
+                },
+            });
+            return;
+        }
+
+        try {
+            const facility = await req.database.facility.findUnique({
+                where: {
+                    id: facilityId,
+                    user: { some: { id: req.authenticatedUser.id } },
+                },
+                include: {
+                    user: true,
+                },
+            });
+
+            if (!facility) {
+                res.status(400).json({
+                    success: false,
+                    data: { message: 'Объект принадлежит другому заказчику' },
+                });
+                return;
+            }
+
+            if (!body) {
+                res.status(400).json({
+                    success: false,
+                    data: {
+                        message:
+                            'Нужен body с объектом contractor: {id: string}',
+                    },
+                });
+                return;
+            }
+
+            const contractor = body.contractor as {
+                id: string;
+            };
+
+            if (!contractor) {
+                res.status(400).json({
+                    success: false,
+                    data: {
+                        message:
+                            'Нужен body с объектом contractor: {id: string}',
+                    },
+                });
+                return;
+            }
+
+            const userCustomer = await req.database.user.findUnique({
+                where: { id: contractor.id || '' },
+            });
+
+            if (!userCustomer) {
+                res.status(400).json({
+                    success: false,
+                    data: {
+                        message: 'Данного подрядчика не существует',
+                    },
+                });
+                return;
+            }
+
+            if (facility.user.find((user) => user.id === contractor.id)) {
+                res.status(400).json({
+                    success: false,
+                    data: {
+                        message:
+                            'Данный подрядчик уже добавлен к этому объекту',
+                    },
+                });
+                return;
+            }
+
+            await req.database.facility.update({
+                where: { id: facilityId },
+                data: {
+                    user: { connect: { id: contractor.id } },
+                },
+            });
+
+            res.status(200).json({
+                success: true,
+                data: {
+                    message: 'Подрядчик успешно добавлен к объекту',
+                },
+            });
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                error: error instanceof Error ? error.message : error,
             });
         }
     }
@@ -371,6 +533,89 @@ export class FacilityController {
                 console.log(error);
                 throw new Error('Ошибка при обновлении акта открытия');
             }
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                error: error instanceof Error ? error.message : error,
+            });
+        }
+    }
+
+    public async approveActOfOpening(req: AuthenticatedRequest, res: Response) {
+        const { id: facilityId } = req.params;
+
+        if (req.authenticatedUser.role !== UserRole.TECHNICAL_CUSTOMER) {
+            res.status(403).json({
+                success: false,
+                data: {
+                    message: 'Нет прав для подтверждения акта открытия объекта',
+                },
+            });
+            return;
+        }
+
+        try {
+            const facility = await req.database.facility.findUnique({
+                where: {
+                    id: facilityId,
+                },
+                include: { user: true, actOfOpening: true },
+            });
+
+            if (!facility) {
+                res.status(400).json({
+                    success: false,
+                    data: {
+                        message: 'Объект не найден',
+                    },
+                });
+                return;
+            }
+
+            if (facility) {
+                if (
+                    facility.user.find(
+                        (user) =>
+                            user.role === UserRole.TECHNICAL_CUSTOMER &&
+                            user.id !== req.authenticatedUser.id
+                    )
+                ) {
+                    res.status(400).json({
+                        success: false,
+                        data: {
+                            message:
+                                'Акт открытия подтвержден другим инспектором',
+                        },
+                    });
+                    return;
+                }
+                if (!facility.actOfOpening) {
+                    res.status(400).json({
+                        success: false,
+                        data: {
+                            message: 'Акт открытия ещё не инициализирован',
+                        },
+                    });
+                    return;
+                }
+            }
+
+            await req.database.facility.update({
+                where: { id: facilityId },
+                data: {
+                    user: { connect: { id: req.authenticatedUser.id } },
+                    actOfOpening: {
+                        update: { status: StatusActOfOpening.DONE },
+                    },
+                },
+            });
+
+            res.status(200).json({
+                success: true,
+                data: {
+                    message: 'Акт успешно подтверждён',
+                },
+            });
         } catch (error) {
             res.status(500).json({
                 success: false,
