@@ -88,15 +88,29 @@ export class FacilityController {
                         : { id: facilityId },
                 include: {
                     polygon: true,
-                    actOfOpening: {
-                        include: {
-                            checkList: {
-                                include: {
-                                    items: { include: { subitems: true } },
-                                },
-                            },
-                        },
+                    actOfOpening:
+                        req.authenticatedUser.role === UserRole.CUSTOMER ||
+                        req.authenticatedUser.role ===
+                            UserRole.TECHNICAL_CUSTOMER
+                            ? {
+                                  include: {
+                                      checkList: {
+                                          include: {
+                                              items: {
+                                                  include: { subitems: true },
+                                              },
+                                          },
+                                      },
+                                  },
+                              }
+                            : false,
+                    listOfWorks: {
+                        include: { materials: true },
                     },
+                    user:
+                        req.authenticatedUser.role === UserRole.CUSTOMER
+                            ? { where: { role: UserRole.CONTRACTOR } }
+                            : false,
                 },
             });
 
@@ -104,7 +118,7 @@ export class FacilityController {
                 res.status(400).json({
                     success: false,
                     data: {
-                        message: 'Объект не найден',
+                        message: 'Объект не найден или недоступен',
                     },
                 });
                 return;
@@ -140,7 +154,17 @@ export class FacilityController {
                 },
             });
 
-            if (facility?.status !== StatusFacility.WAITING) {
+            if (!facility) {
+                res.status(400).json({
+                    success: false,
+                    data: {
+                        message: 'Объект не найден',
+                    },
+                });
+                return;
+            }
+
+            if (facility.status !== StatusFacility.WAITING) {
                 res.status(400).json({
                     success: false,
                     data: { message: 'Объект уже активирован' },
@@ -276,15 +300,29 @@ export class FacilityController {
                 },
                 include: {
                     polygon: true,
-                    actOfOpening: {
-                        include: {
-                            checkList: {
-                                include: {
-                                    items: { include: { subitems: true } },
-                                },
-                            },
-                        },
+                    actOfOpening:
+                        req.authenticatedUser.role === UserRole.CUSTOMER ||
+                        req.authenticatedUser.role ===
+                            UserRole.TECHNICAL_CUSTOMER
+                            ? {
+                                  include: {
+                                      checkList: {
+                                          include: {
+                                              items: {
+                                                  include: { subitems: true },
+                                              },
+                                          },
+                                      },
+                                  },
+                              }
+                            : false,
+                    listOfWorks: {
+                        include: { materials: true },
                     },
+                    user:
+                        req.authenticatedUser.role === UserRole.CUSTOMER
+                            ? { where: { role: UserRole.CONTRACTOR } }
+                            : false,
                 },
             });
 

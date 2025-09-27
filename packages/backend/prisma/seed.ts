@@ -1,4 +1,10 @@
-import { PrismaClient, StatusFacility, User, UserRole } from '@prisma/client';
+import {
+    ListOfMeasurement,
+    PrismaClient,
+    StatusFacility,
+    User,
+    UserRole,
+} from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
 
 const USERS = [
@@ -158,6 +164,43 @@ const FACILITIES = [
         ].map((polygon) =>
             polygon.map((contour) => contour.map((coord) => coord.reverse()))
         ),
+        listOfWorks: [
+            {
+                title: 'Устройство садового бортового камня в рамках благоустройства территории',
+                count: 15,
+                measurement: ListOfMeasurement.RUNNING_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Ремонт покрытия асфальтобетонного автопарковки в рамках благоустройства территории',
+                count: 365,
+                measurement: ListOfMeasurement.SQUARE_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Ремонт покрытия асфальтобетонного тротуара в рамках благоустройства территории',
+                count: 156,
+                measurement: ListOfMeasurement.SQUARE_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Ремонт покрытия асфальтобетонного проезда в рамках благоустройства территории',
+                count: 884,
+                measurement: ListOfMeasurement.SQUARE_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Замена дорожного бортового камня в рамках благоустройства территории',
+                count: 216.8,
+                measurement: ListOfMeasurement.RUNNING_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+        ],
     },
     {
         id: uuidv4(),
@@ -277,6 +320,64 @@ const FACILITIES = [
         ].map((polygon) =>
             polygon.map((contour) => contour.map((coord) => coord.reverse()))
         ),
+        listOfWorks: [
+            {
+                title: 'Устройство садового бортового камня в рамках благоустройства территории',
+                count: 48,
+                measurement: ListOfMeasurement.RUNNING_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Замена садового бортового камня в рамках благоустройства территории',
+                count: 70,
+                measurement: ListOfMeasurement.RUNNING_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Ремонт газона в рамках благоустройства территории',
+                count: 150,
+                measurement: ListOfMeasurement.SQUARE_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Замена покрытия из резиновой крошки спортивной площадки в рамках благоустройства территории',
+                count: 387,
+                measurement: ListOfMeasurement.SQUARE_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Устройство покрытия асфальтобетонного пешеходной дорожки в рамках благоустройства территории',
+                count: 12.8,
+                measurement: ListOfMeasurement.SQUARE_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Замена покрытия из резиновой крошки детской площадки в рамках благоустройства территории',
+                count: 80,
+                measurement: ListOfMeasurement.SQUARE_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'ОБУСТРОЙСТВО МАФ ТЕРРИТОРИЙ',
+                count: 14,
+                measurement: ListOfMeasurement.PIECE,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Замена ограждения контейнерной площадки в рамках благоустройства территории',
+                count: 1,
+                measurement: ListOfMeasurement.PIECE,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+        ],
     },
     {
         id: uuidv4(),
@@ -372,6 +473,57 @@ const FACILITIES = [
         ].map((polygon) =>
             polygon.map((contour) => contour.map((coord) => coord.reverse()))
         ),
+        listOfWorks: [
+            {
+                title: 'Устройство покрытия асфальтобетонного пешеходной дорожки в рамках благоустройства территории',
+                count: 13,
+                measurement: ListOfMeasurement.SQUARE_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Устройство садового бортового камня в рамках благоустройства территории',
+                count: 22,
+                measurement: ListOfMeasurement.RUNNING_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Ремонт газона в рамках благоустройства территории',
+                count: 2800,
+                measurement: ListOfMeasurement.SQUARE_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Замена покрытия из резиновой крошки детской площадки в рамках благоустройства территории',
+                count: 178.56,
+                measurement: ListOfMeasurement.SQUARE_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Замена покрытия из резиновой крошки спортивной площадки в рамках благоустройства территории',
+                count: 136.8,
+                measurement: ListOfMeasurement.SQUARE_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'ОБУСТРОЙСТВО МАФ ТЕРРИТОРИЙ',
+                count: 26,
+                measurement: ListOfMeasurement.PIECE,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Замена садового бортового камня в рамках благоустройства территории',
+                count: 101,
+                measurement: ListOfMeasurement.RUNNING_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+        ],
     },
     {
         id: uuidv4(),
@@ -523,6 +675,36 @@ const FACILITIES = [
         ].map((polygon) =>
             polygon.map((contour) => contour.map((coord) => coord.reverse()))
         ),
+        listOfWorks: [
+            {
+                title: 'Замена ограждения контейнерной площадки в рамках благоустройства территории',
+                count: 1,
+                measurement: ListOfMeasurement.PIECE,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'ОБУСТРОЙСТВО МАФ ТЕРРИТОРИЙ',
+                count: 31,
+                measurement: ListOfMeasurement.PIECE,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Замена дорожного бортового камня в рамках благоустройства территории',
+                count: 193,
+                measurement: ListOfMeasurement.RUNNING_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Устройство покрытия асфальтобетонного пешеходной дорожки в рамках благоустройства территории',
+                count: 2076,
+                measurement: ListOfMeasurement.SQUARE_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+        ],
     },
     {
         id: uuidv4(),
@@ -622,6 +804,50 @@ const FACILITIES = [
         ].map((polygon) =>
             polygon.map((contour) => contour.map((coord) => coord.reverse()))
         ),
+        listOfWorks: [
+            {
+                title: 'Ремонт покрытия асфальтобетонного проезда в рамках благоустройства территории',
+                count: 1333,
+                measurement: ListOfMeasurement.SQUARE_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Устройство покрытия асфальтобетонного проезда в рамках благоустройства территории',
+                count: 151,
+                measurement: ListOfMeasurement.SQUARE_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Ремонт покрытия асфальтобетонного тротуара в рамках благоустройства территории',
+                count: 342,
+                measurement: ListOfMeasurement.SQUARE_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Замена дорожного бортового камня в рамках благоустройства территории',
+                count: 379,
+                measurement: ListOfMeasurement.RUNNING_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Устройство дорожного бортового камня в рамках благоустройства территории',
+                count: 57,
+                measurement: ListOfMeasurement.RUNNING_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Ремонт покрытия асфальтобетонного автопарковки в рамках благоустройства территории',
+                count: 481,
+                measurement: ListOfMeasurement.SQUARE_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+        ],
     },
     {
         id: uuidv4(),
@@ -781,6 +1007,155 @@ const FACILITIES = [
         ].map((polygon) =>
             polygon.map((contour) => contour.map((coord) => coord.reverse()))
         ),
+        listOfWorks: [
+            {
+                title: 'Ремонт покрытия асфальтобетонного проезда в рамках благоустройства территории',
+                count: 1333,
+                measurement: ListOfMeasurement.SQUARE_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Ремонт люка подземных коммуникаций (смотрового колодца) в рамках благоустройства территории',
+                count: 151,
+                measurement: ListOfMeasurement.PIECE,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Замена дорожного бортового камня в рамках благоустройства территории',
+                count: 342,
+                measurement: ListOfMeasurement.RUNNING_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Замена садового бортового камня в рамках благоустройства территории',
+                count: 379,
+                measurement: ListOfMeasurement.RUNNING_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Ремонт покрытия асфальтобетонного тротуара в рамках благоустройства территории',
+                count: 57,
+                measurement: ListOfMeasurement.SQUARE_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Ремонт газона в рамках благоустройства территории',
+                count: 481,
+                measurement: ListOfMeasurement.SQUARE_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Ремонт покрытия асфальтобетонного пешеходной дорожки в рамках благоустройства территории',
+                count: 481,
+                measurement: ListOfMeasurement.SQUARE_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Устройство покрытия из резиновой крошки детской площадки в рамках благоустройства территории',
+                count: 481,
+                measurement: ListOfMeasurement.SQUARE_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Установка ограждения контейнерной площадки в рамках благоустройства территории',
+                count: 481,
+                measurement: ListOfMeasurement.RUNNING_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Установка ограждения детской площадки в рамках благоустройства территории',
+                count: 481,
+                measurement: ListOfMeasurement.RUNNING_METER,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Установка информационного стенда в рамках благоустройства территории',
+                count: 1,
+                measurement: ListOfMeasurement.PIECE,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Установка информационного стенда в рамках благоустройства территории',
+                count: 1,
+                measurement: ListOfMeasurement.PIECE,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Установка информационного стенда в рамках благоустройства территории',
+                count: 1,
+                measurement: ListOfMeasurement.PIECE,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Установка скамьи в рамках благоустройства территории',
+                count: 1,
+                measurement: ListOfMeasurement.PIECE,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Установка урны в рамках благоустройства территории',
+                count: 1,
+                measurement: ListOfMeasurement.PIECE,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Установка игрового детского комплекса 1 категории в рамках благоустройства территории',
+                count: 1,
+                measurement: ListOfMeasurement.PIECE,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Установка игрового элемента карусель в рамках благоустройства территории',
+                count: 1,
+                measurement: ListOfMeasurement.PIECE,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Установка игрового элемента качалка в рамках благоустройства территории',
+                count: 1,
+                measurement: ListOfMeasurement.PIECE,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Установка игрового элемента качели в рамках благоустройства территории',
+                count: 1,
+                measurement: ListOfMeasurement.PIECE,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Установка игрового элемента песочница в рамках благоустройства территории',
+                count: 1,
+                measurement: ListOfMeasurement.PIECE,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+            {
+                title: 'Установка спортивного детского комплекса 1 категории в рамках благоустройства территории',
+                count: 1,
+                measurement: ListOfMeasurement.PIECE,
+                startAt: new Date(Date.parse('2024-04-15')),
+                endAt: new Date(Date.parse('2024-08-25')),
+            },
+        ],
     },
     {
         id: uuidv4(),
@@ -1431,6 +1806,7 @@ const FACILITIES = [
         ].map((polygon) =>
             polygon.map((contour) => contour.map((coord) => coord.reverse()))
         ),
+        listOfWorks: [],
     },
 ];
 
@@ -1471,7 +1847,7 @@ async function initUsers(): Promise<User[]> {
 
 async function initFacilities() {
     const FACILITIES_DTO = FACILITIES.map((FACILITY) => {
-        const { coordinates, ...facilityDto } = FACILITY;
+        const { coordinates, listOfWorks, ...facilityDto } = FACILITY;
         return facilityDto;
     });
     const facilities = await prisma.facility.createManyAndReturn({
@@ -1489,11 +1865,12 @@ async function updateFacilities(
         await Promise.all(
             FACILITIES.map(async (FACILITY) => {
                 await initPolygonForFacility(FACILITY.coordinates, FACILITY.id);
-                await connectCustomersAndTechnicalCustomersToFacility(
-                    FACILITY.id,
-                    customerId,
-                    technicalCustomerId
-                );
+                await initListOfWorks(FACILITY.listOfWorks, FACILITY.id);
+                // await connectCustomersAndTechnicalCustomersToFacility(
+                //     FACILITY.id,
+                //     customerId,
+                //     technicalCustomerId
+                // );
             })
         );
         return { success: true, message: 'Объекты успешно изменены' };
@@ -1517,23 +1894,43 @@ async function initPolygonForFacility(
     });
 }
 
-async function connectCustomersAndTechnicalCustomersToFacility(
-    facilityId: string,
-    customerId: string,
-    technicalCustomerId: string
+// async function connectCustomersAndTechnicalCustomersToFacility(
+//     facilityId: string,
+//     customerId: string,
+//     technicalCustomerId: string
+// ) {
+// await prisma.facility.update({
+//     where: { id: facilityId },
+//     data: {
+//         user: {
+//             connect: [
+//                 {
+//                     id: customerId,
+//                 },
+//                 {
+//                     id: technicalCustomerId,
+//                 },
+//             ],
+//         },
+//     },
+// });
+// }
+
+async function initListOfWorks(
+    listOfWorks: {
+        title: string;
+        count: number;
+        measurement: ListOfMeasurement;
+        startAt: Date;
+        endAt: Date;
+    }[],
+    facilityId: string
 ) {
     await prisma.facility.update({
         where: { id: facilityId },
         data: {
-            user: {
-                connect: [
-                    {
-                        id: customerId,
-                    },
-                    {
-                        id: technicalCustomerId,
-                    },
-                ],
+            listOfWorks: {
+                create: listOfWorks,
             },
         },
     });
