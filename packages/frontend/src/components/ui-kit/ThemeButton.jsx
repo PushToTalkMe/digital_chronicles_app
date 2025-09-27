@@ -15,7 +15,7 @@ import LightModeIcon from '@mui/icons-material/LightMode'
  * @return {JSX.Element}
  */
 export const ThemeButton = () => {
-  const {toDarkTheme, toLightTheme, darkThemeStatus} = useContext(Context)
+  const {toDarkTheme, toLightTheme, darkThemeStatus, accessToken} = useContext(Context)
 
   const changeTheme = () => {
     if (darkThemeStatus) {
@@ -28,17 +28,21 @@ export const ThemeButton = () => {
   };
 
   return (
-    <div>
-      <Grow in>
-        <Fab
-          color={'primary'}
-          aria-label={'theme'}
-          sx={{position: 'fixed', bottom: 16, right: 16}}
-          onClick={changeTheme}
-        >
-          {darkThemeStatus ? <LightModeIcon/> : <DarkModeIcon/>}
-        </Fab>
-      </Grow>
-    </div>
+      <div>
+        <Grow in>
+          <Fab
+              color={'primary'}
+              aria-label={'theme'}
+              sx={{
+                position: 'fixed',
+                bottom: accessToken ? 8 * 10 : 16,
+                right: 16}
+              }
+              onClick={changeTheme}
+          >
+            {darkThemeStatus ? <LightModeIcon/> : <DarkModeIcon/>}
+          </Fab>
+        </Grow>
+      </div>
   );
 };

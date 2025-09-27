@@ -34,7 +34,7 @@ export const BottomNavBar = () => {
       >
         <BottomNavigationAction
           component={RouterLink}
-          to={'/objects'}
+          to={'/'}
           label={'Объекты'}
           icon={<LocationCityOutlined/>}
         />
@@ -52,7 +52,7 @@ export const BottomNavBar = () => {
         />
         <BottomNavigationAction
           component={RouterLink}
-          to={'/'}
+          to={'/logout'}
           label={'Выход'}
           icon={<LogoutOutlined/>}
         />
