@@ -21,6 +21,7 @@ import {createTheme} from '@mui/material/styles'
 import {ThemeButton} from './components/ui-kit/ThemeButton'
 
 import {Context} from './context'
+import {PrivateRoute} from "./privateRoute";
 
 /**
  * Root React element
@@ -41,7 +42,7 @@ function App() {
     metaThemeColor.content = color
   }
   const toDarkTheme = () => {
-    updateMetaThemeColor(grey[900])
+    updateMetaThemeColor('#313131')
     setDarkThemeStatus(true)
   }
   const toLightTheme = () => {
@@ -59,7 +60,7 @@ function App() {
   }, [savedTheme])
 
   const [darkThemeStatus, setDarkThemeStatus] = useState(
-    savedTheme === 'dark' || (savedTheme === null && prefersDarkMode),
+      savedTheme === 'dark' || (savedTheme === null && prefersDarkMode),
   )
 
   const lightTheme = createTheme({
@@ -102,51 +103,58 @@ function App() {
   })
 
   const theme = darkThemeStatus ? darkTheme : lightTheme
-  // const theme = darkTheme
+  const accessToken = localStorage.getItem('accessToken')
 
   return (
-    <Router>
-      <Fragment>
-        <Context.Provider
-          value={{
-            toDarkTheme,
-            toLightTheme,
-            darkThemeStatus,
-          }}
-        >
-          <ThemeProvider theme={theme}>
-            <Box
-              sx={{
-                bgcolor: (theme) => theme.palette.background.default,
-                minHeight: '100vh',
+      <Router>
+        <Fragment>
+          <Context.Provider
+              value={{
+                toDarkTheme,
+                toLightTheme,
+                darkThemeStatus,
+                accessToken,
               }}
-            >
-              <TopNavBar/>
-              <Container
-                sx={{minHeight: '90vh'}}
+          >
+            <ThemeProvider theme={theme}>
+              <Box
+                  sx={{
+                    bgcolor: (theme) => theme.palette.background.default,
+                    minHeight: '100vh',
+                    pb: 8
+                  }}
               >
-                <Routes>
-                  <Route
-                    path={'/login'} element={<LoginPage/>} exact
-                  />
-                  <Route
-                    path={'/'} element={<ObjectsPage/>} exact
-                  />
-                  <Route
-                    path={'/tasks'} element={<TasksPage/>} exact
-                  />
-                  <Route
-                    path={'/profile'} element={<ProfilePage/>} exact
-                  />
-                </Routes>
-              </Container>
-              <BottomNavBar/>
-              <ThemeButton/>
-            </Box>
-          </ThemeProvider>
-        </Context.Provider>
-      </Fragment>
-    </Router>
+                <TopNavBar/>
+                <Container
+                    sx={{minHeight: '90vh'}}
+                >
+                  <Routes>
+                    <Route path={'/login'} element={<LoginPage/>}/>
+                    <Route element={<PrivateRoute/>}>
+                      <Route
+                          path={'/login'} element={<LoginPage/>}
+                      />
+                      <Route
+                          path={'/'} element={<ObjectsPage/>}
+                      />
+                      <Route
+                          path={'/tasks'} element={<TasksPage/>}
+                      />
+                      <Route
+                          path={'/profile'} element={<ProfilePage/>}
+                      />
+                    </Route>
+                  </Routes>
+                </Container>
+                {accessToken &&
+                <BottomNavBar/>
+                }
+                <ThemeButton/>
+              </Box>
+            </ThemeProvider>
+          </Context.Provider>
+        </Fragment>
+      </Router>
   )
 }
 

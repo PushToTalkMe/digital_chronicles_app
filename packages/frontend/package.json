@@ -7,7 +7,7 @@
   "description": "A hackathon app",
   "author": "qjalti",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "dev:all": "concurrently \"npm run dev:vite\" \"wait-on http://localhost:5173 && npm run dev:electron\"",
     "dev:vite": "vite",
     "dev:electron": "cross-env NODE_ENV=development electron .",
