@@ -14,9 +14,15 @@ import {Link as RouterLink} from 'react-router-dom'
 
 export const BottomNavBar = () => {
   const [bnValue, setBNValue] = useState(0)
+
   return (
     <Paper
-      sx={{position: 'fixed', bottom: 0, left: 0, right: 0}}
+      sx={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0
+      }}
     >
       <BottomNavigation
         showLabels
@@ -24,6 +30,7 @@ export const BottomNavBar = () => {
         onChange={(event, newValue) => {
           setBNValue(newValue)
         }}
+        sx={{background: 'none'}}
       >
         <BottomNavigationAction
           component={RouterLink}

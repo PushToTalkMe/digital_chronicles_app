@@ -6,9 +6,16 @@ import {grey} from '@mui/material/colors'
 import {
   ConstructionOutlined
 } from '@mui/icons-material'
+import axios from 'axios'
 
-export const IndexPage = () => {
-
+export const LoginPage = () => {
+  const loginHandler = async () => {
+    const RESPONSE = await axios.post('/api/auth/login', {
+      login: 'customer',
+      password: '12345678'
+    })
+    console.log(RESPONSE)
+  }
   return (
     <>
       <Grow
@@ -73,6 +80,7 @@ export const IndexPage = () => {
               <Button
                 variant={'contained'}
                 fullWidth
+                onClick={loginHandler}
               >
                 Войти
               </Button>

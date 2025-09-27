@@ -6,7 +6,7 @@ export const TopNavBar = () => {
   const LOCATION = useLocation()
   const detectPageTitle = () => {
     const ROUTE_TITLES = {
-      '/': 'Вход',
+      '/': 'Digital Chronicles app',
       '/objects': 'Объекты',
       '/tasks': 'Задачи',
       '/profile': 'Профиль',
