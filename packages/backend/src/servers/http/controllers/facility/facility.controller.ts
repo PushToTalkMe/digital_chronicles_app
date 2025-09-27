@@ -35,9 +35,15 @@ export class FacilityController {
                     req.authenticatedUser.role === UserRole.CONTRACTOR
                         ? { user: { some: { id: req.authenticatedUser.id } } }
                         : {},
-                include: {
-                    polygon: true,
-                },
+                include:
+                    req.authenticatedUser.role !== UserRole.CONTRACTOR
+                        ? {
+                              polygon: true,
+                              actOfOpening: { select: { status: true } },
+                          }
+                        : {
+                              polygon: true,
+                          },
                 orderBy: { createdAt: 'desc' },
                 skip: offset,
                 take: limit,
