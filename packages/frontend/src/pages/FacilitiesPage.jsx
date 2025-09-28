@@ -4,9 +4,10 @@ import {
   MenuItem, Paper, Select, TextField, Typography, Grow, Chip, Snackbar
 } from '@mui/material'
 import {SearchOutlined} from '@mui/icons-material'
+import {Link} from 'react-router-dom'
 
 import apiClient from '../apiClient'
-import {Loading} from "../components/ui-kit/Loading";
+import {Loading} from '../components/ui-kit/Loading'
 
 const STATUS_LABELS = {
   WAITING: 'Ожидание',
@@ -16,7 +17,7 @@ const STATUS_LABELS = {
 
 const STATUS_COLORS = {
   WAITING: 'warning',
-  IN_PROCESS: 'default',
+  IN_PROCESS: 'info',
   DONE: 'success'
 }
 
@@ -49,14 +50,13 @@ const isWithinDateRange = (facility, dateFilter) => {
   }
 }
 
-export const ObjectsPage = () => {
+export const FacilitiesPage = () => {
   const [statusFilter, setStatusFilter] = useState('')
   const [dateFilter, setDateFilter] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
   const [facilities, setFacilities] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-
 
   useEffect(() => {
     const loadFacilities = async () => {
@@ -134,6 +134,7 @@ export const ObjectsPage = () => {
                       value={searchQuery}
                       onChange={handleSearchChange}
                       placeholder={'Поиск'}
+                      size={'small'}
                   />
                 </Grid>
                 <Grid item>
@@ -201,59 +202,64 @@ export const ObjectsPage = () => {
                     filteredFacilities.map((facility) => (
                         <React.Fragment key={facility.id}>
                           <Divider variant={'fullWidth'}/>
-                          <Grid
-                              item
-                          >
+                          <Link to={`/facility/${facility.id}`} style={{
+                            textDecoration: 'none',
+                            color: 'inherit'
+                          }}>
                             <Grid
-                                container
-                                spacing={1}
+                                item
                             >
-                              <Grid item>
-                                <Box
-                                    component={'img'}
-                                    src={'https://placehold.co/64x64'}
-                                    sx={{
-                                      borderRadius: 2,
-                                      width: 64,
-                                    }}
-                                    alt={'Image error'}
-                                >
-                                </Box>
-                              </Grid>
-                              <Grid item>
-                                <Grid
-                                    container
-                                    flexDirection={'column'}
-                                    spacing={1}
-                                    sx={{minWidth: 0}}
-                                >
-                                  <Grid
-                                      item
-                                      sx={{overflowX: 'auto', maxWidth: '100%'}}
+                              <Grid
+                                  container
+                                  spacing={1}
+                              >
+                                <Grid item>
+                                  <Box
+                                      component={'img'}
+                                      src={'/64x64.svg'}
+                                      sx={{
+                                        borderRadius: 2,
+                                        width: 64,
+                                      }}
+                                      alt={'Image error'}
                                   >
-                                    <Typography
-                                        fontWeight={'bold'}
+                                  </Box>
+                                </Grid>
+                                <Grid item>
+                                  <Grid
+                                      container
+                                      flexDirection={'column'}
+                                      spacing={1}
+                                      sx={{minWidth: 0}}
+                                  >
+                                    <Grid
+                                        item
                                         sx={{
-                                          whiteSpace: 'nowrap',
-                                          minWidth: 'fit-content',
-                                          pr: 1,
+                                          maxWidth: {
+                                            sm: '100%',
+                                            xs: 200
+                                          },
                                         }}
                                     >
-                                      {facility.title}
-                                    </Typography>
-                                  </Grid>
-                                  <Grid item>
-                                    <Chip
-                                        label={STATUS_LABELS[facility.status]}
-                                        color={STATUS_COLORS[facility.status] || 'default'}
-                                        size={'small'}
-                                        variant={'outlined'}
-                                    />
+                                      <Typography
+                                          fontWeight={'bold'}
+                                      >
+                                        {facility.title}
+                                      </Typography>
+                                    </Grid>
+                                    <Grid item>
+                                      <Chip
+                                          label={STATUS_LABELS[facility.status]}
+                                          color={STATUS_COLORS[facility.status] || 'default'}
+                                          size={'small'}
+                                          variant={'outlined'}
+                                      />
+                                    </Grid>
                                   </Grid>
                                 </Grid>
                               </Grid>
                             </Grid>
-                          </Grid>
+                          </Link>
                         </React.Fragment>
                     )))}
               </Grid>

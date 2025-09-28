@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import {
-  Grid, Paper, TextField, Typography, Button, Grow
+  Grid, Paper, TextField, Typography, Button, Grow, Snackbar, Alert
 } from '@mui/material'
 import {grey} from '@mui/material/colors'
 import {
@@ -13,11 +13,18 @@ export const LoginPage = () => {
   const [login, setLogin] = useState('')
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState('')
+  const [sbOpen, sbSetOpen] = useState(false)
+  const [sbColor, setSbColor] = useState('')
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
   const loginHandler = async () => {
-
+    if (!login || !password) {
+      setMessage('Введите логин и пароль')
+      return
+    }
     try {
+      setLoading(true)
       const res = await axios.post('/api/auth/login', {
             login,
             password,
@@ -30,17 +37,43 @@ export const LoginPage = () => {
 
       localStorage.setItem('accessToken', res.data.data.token)
 
+      setLoading(false)
+      setSbColor('success')
       setMessage('Успешный вход. Вы будете перенаправлены на главную страницу через 3 секунды...')
+      sbSetOpen(true)
       setTimeout(() => {
         navigate('/')
       }, 3000)
     } catch (err) {
+      setLoading(false)
+      setSbColor('error')
       setMessage('Ошибка: ' + (err.response?.data?.message || err.message))
+      sbSetOpen(true)
     }
   };
 
+  const handleCloseError = () => {
+    sbSetOpen(false)
+  }
+
   return (
       <>
+        <Snackbar
+            anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
+            open={sbOpen}
+            autoHideDuration={6000}
+            onClose={handleCloseError}
+        >
+
+          <Alert
+              onClose={handleCloseError}
+              severity={sbColor}
+              variant={'filled'}
+              sx={{width: '100%'}}
+          >
+            {message}
+          </Alert>
+        </Snackbar>
         <Grow
             in
         >
@@ -87,6 +120,9 @@ export const LoginPage = () => {
                     value={login}
                     onChange={(e) => setLogin(e.target.value)}
                     placeholder={'Ваш логин'}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') loginHandler().then(() => false)
+                    }}
                     fullWidth
                     required
                 />
@@ -99,6 +135,9 @@ export const LoginPage = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder={'Ваш пароль'}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') loginHandler().then(() => false)
+                    }}
                     type={'password'}
                     fullWidth
                     required
@@ -114,17 +153,6 @@ export const LoginPage = () => {
                 >
                   Войти
                 </Button>
-              </Grid>
-              <Grid item>
-                {message && (
-                    <Typography
-                        variant={'body2'}
-                        color={'text.error'}
-                        sx={{mt: 2}}
-                    >
-                      {message}
-                    </Typography>
-                )}
               </Grid>
             </Grid>
           </Paper>

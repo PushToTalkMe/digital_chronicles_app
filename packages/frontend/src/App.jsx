@@ -2,26 +2,28 @@ import React, {Fragment, useState, useEffect} from 'react'
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom'
 import './App.css'
 import {Container, Box, ThemeProvider, useMediaQuery} from '@mui/material'
-import {grey, common, red, purple} from '@mui/material/colors';
+import {grey, common, red, purple} from '@mui/material/colors'
 
 /**
  * Components
  */
 import {TopNavBar} from './components/layout/TopNavBar'
 import {BottomNavBar} from './components/layout/BottomNavBar'
+import {ThemeButton} from './components/ui-kit/ThemeButton'
+import {BackButton} from './components/ui-kit/BackButton'
 
 /**
  * Pages
  */
 import {LoginPage} from './pages/LoginPage'
-import {ObjectsPage} from './pages/ObjectsPage'
+import {FacilitiesPage} from './pages/FacilitiesPage'
 import {TasksPage} from './pages/TasksPage'
 import {ProfilePage} from './pages/ProfilePage'
 import {createTheme} from '@mui/material/styles'
-import {ThemeButton} from './components/ui-kit/ThemeButton'
+import {FacilityDetailPage} from './pages/FacilityDetailPage'
 
 import {Context} from './context'
-import {PrivateRoute} from "./privateRoute";
+import {PrivateRoute} from './privateRoute'
 
 /**
  * Root React element
@@ -46,7 +48,7 @@ function App() {
     setDarkThemeStatus(true)
   }
   const toLightTheme = () => {
-    updateMetaThemeColor(grey[50])
+    updateMetaThemeColor(common.white)
     setDarkThemeStatus(false)
   }
 
@@ -105,6 +107,8 @@ function App() {
   const theme = darkThemeStatus ? darkTheme : lightTheme
   const accessToken = localStorage.getItem('accessToken')
 
+  const [drawerStatus, setDrawerStatus] = useState(false)
+
   return (
       <Router>
         <Fragment>
@@ -114,6 +118,8 @@ function App() {
                 toLightTheme,
                 darkThemeStatus,
                 accessToken,
+                drawerStatus,
+                setDrawerStatus
               }}
           >
             <ThemeProvider theme={theme}>
@@ -135,7 +141,11 @@ function App() {
                           path={'/login'} element={<LoginPage/>}
                       />
                       <Route
-                          path={'/'} element={<ObjectsPage/>}
+                          path={'/facility/:id'}
+                          element={<FacilityDetailPage/>}
+                      />
+                      <Route
+                          path={'/'} element={<FacilitiesPage/>}
                       />
                       <Route
                           path={'/tasks'} element={<TasksPage/>}
@@ -150,6 +160,7 @@ function App() {
                 <BottomNavBar/>
                 }
                 <ThemeButton/>
+                <BackButton/>
               </Box>
             </ThemeProvider>
           </Context.Provider>

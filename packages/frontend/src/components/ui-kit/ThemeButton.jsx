@@ -15,7 +15,12 @@ import LightModeIcon from '@mui/icons-material/LightMode'
  * @return {JSX.Element}
  */
 export const ThemeButton = () => {
-  const {toDarkTheme, toLightTheme, darkThemeStatus, accessToken} = useContext(Context)
+  const {
+    toDarkTheme,
+    toLightTheme,
+    darkThemeStatus,
+    accessToken
+  } = useContext(Context)
 
   const changeTheme = () => {
     if (darkThemeStatus) {
@@ -35,8 +40,12 @@ export const ThemeButton = () => {
               aria-label={'theme'}
               sx={{
                 position: 'fixed',
-                bottom: accessToken ? 8 * 10 : 16,
-                right: 16}
+                bottom: {
+                  sm: 16,
+                  xs: 8 * 10,
+                },
+                right: 16
+              }
               }
               onClick={changeTheme}
           >
