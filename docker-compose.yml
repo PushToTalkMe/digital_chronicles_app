@@ -1,0 +1,43 @@
+services:
+    database:
+        image: postgres:15
+        container_name: database
+        restart: always
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_DB: db
+        ports:
+            - '5432:5432'
+        volumes:
+            - db_data:/var/lib/postgresql/data
+
+    backend:
+        build:
+            context: .
+            dockerfile: packages/backend/Dockerfile
+        container_name: backend
+        restart: always
+        environment:
+            DATABASE_URL: postgresql://postgres:postgres@database:5432/db
+            HOST: 0.0.0.0
+        depends_on:
+            - database
+        ports:
+            - '3000:3000'
+
+    frontend:
+        build:
+            context: .
+            dockerfile: packages/frontend/Dockerfile
+        container_name: frontend
+        restart: always
+        environment:
+            API_URL: http://backend:3000/api
+        depends_on:
+            - backend
+        ports:
+            - '3001:3001'
+
+volumes:
+    db_data:

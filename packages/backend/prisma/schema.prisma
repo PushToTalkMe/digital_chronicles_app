@@ -11,17 +11,139 @@ model User {
   id           String   @id @default(cuid())
   email        String  @default("")
   login        String  @unique
+  firstName    String
+  lastName     String
   passwordHash String
   role         UserRole
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt @default(now())
 
+  facilities Facility[]
+  actsOfOpeningFacilities ActOfOpeningFacility[]
+
   @@map("users")
 }
 
+model Facility {
+  id  String @id @default(cuid())
+  title String  @default("Объект")
+  status StatusFacility
+  plannedStartAt    DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt @default(now())
+
+  user  User[]
+  polygon Polygon?
+  actOfOpening ActOfOpeningFacility?
+  listOfWorks ListOfWork[]
+  
+  @@map("facilities")
+}
+
+model Polygon {
+  coordinates Json  
+  area        Float?
+
+  facilityId  String @unique
+  facility    Facility @relation(fields: [facilityId], references: [id])
+
+  @@map("polygons")
+}
+
+model ActOfOpeningFacility {
+  id        String @id @default(cuid())
+  status  StatusActOfOpening
+  facilityId  String @unique
+  facility    Facility @relation(fields: [facilityId], references: [id])
+  user  User[]
+  checkList CheckListActOfOpeningFacility?
+
+  @@map("actsOfOpeningFacility")
+}
+
+model CheckListActOfOpeningFacility {
+  id    Int     @id @default(autoincrement())
+  facilityId  String @unique
+  title String
+
+  items ChecklistItem[]
+  actOfOpeningFacility ActOfOpeningFacility @relation(fields: [facilityId], references: [id])
+
+   @@map("checkListsForActOfOpening")
+}
+
+model ChecklistItem {
+  id          Int      @id @default(autoincrement())
+  text        String
+  description String?
+  completed   CheckListItemStatus
+  
+  checklistId Int?
+  checklist   CheckListActOfOpeningFacility? @relation(fields: [checklistId], references: [id])
+  
+  parentId    Int?
+  parent      ChecklistItem? @relation("Subitems", fields: [parentId], references: [id])
+  
+  subitems    ChecklistItem[] @relation("Subitems")
+
+  @@map("checkListItemsForActOfOpening")
+}
+
+model ListOfWork {
+  id          Int      @id @default(autoincrement())
+  title       String
+  count       Float
+  measurement ListOfMeasurement
+  startAt     DateTime
+  endAt       DateTime
+
+  facilityId String
+  facility Facility @relation(fields: [facilityId], references: [id])
+
+  materials Material[]
+
+  @@map("listOfWorks")
+}
+
+model Material {
+  id  Int @id @default(autoincrement())
+  name String
+  volume String
+
+  listOfWorkId Int
+  listOfWork ListOfWork @relation(fields: [listOfWorkId], references: [id])
+
+  @@map("materials")
+}
+
 enum UserRole {
-  ADMIN
   CUSTOMER
   TECHNICAL_CUSTOMER
   CONTRACTOR
+}
+
+
+enum StatusFacility {
+  WAITING
+  IN_PROCESS
+  DONE
+}
+
+enum StatusActOfOpening {
+  WAITING_APPROVE
+  IN_PROCESS
+  DONE
+}
+
+enum CheckListItemStatus {
+  YES
+  NO
+  OPTIONAL
+  NULL
+}
+
+enum ListOfMeasurement {
+  RUNNING_METER
+  SQUARE_METER
+  PIECE
 }

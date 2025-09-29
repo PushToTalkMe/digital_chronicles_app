@@ -17,7 +17,10 @@ export class AppService {
 
     constructor() {
         this.databaseService = new DatabaseService(CONFIG.database);
-        this.serversManager = new ServersManager(CONFIG.servers);
+        this.serversManager = new ServersManager(
+            CONFIG.servers,
+            this.databaseService
+        );
     }
 
     public async start(): Promise<AppStartupResult> {

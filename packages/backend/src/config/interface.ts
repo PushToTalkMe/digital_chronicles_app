@@ -21,7 +21,14 @@ export interface HttpServerConfig {
 
 export interface JwtConfig {
     secret: string;
-    expiresIn: string;
+    expiresIn: DurationString;
     refreshSecret: string;
-    refreshExpiresIn: string;
+    refreshExpiresIn: DurationString;
+    refreshRememberMeExpiresIn: DurationString;
 }
+
+export type DurationString =
+    | `${number}s`
+    | `${number}m`
+    | `${number}h`
+    | `${number}d`;
