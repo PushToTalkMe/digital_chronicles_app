@@ -48,3 +48,11 @@ materialRoutes.post(
     (req, res) =>
         materialController.sendMaterial(req as AuthenticatedRequest, res)
 );
+
+materialRoutes.post(
+    '/approve/:id',
+    (req, res, next) => authMiddleware.authenticate(req, res, next),
+    upload.single('file'),
+    (req, res) =>
+        materialController.approveMaterial(req as AuthenticatedRequest, res)
+);
