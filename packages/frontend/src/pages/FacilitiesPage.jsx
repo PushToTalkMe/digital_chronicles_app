@@ -96,176 +96,176 @@ export const FacilitiesPage = () => {
   }
 
   return (
-      <>
-        <Loading status={loading}/>
-        <Snackbar
-            anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
-            open={!!error}
-            autoHideDuration={6000}
-            onClose={handleCloseError}
-            message={error}
-        />
-        <Grow
-            in
+    <>
+      <Loading status={loading}/>
+      <Snackbar
+        anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+        open={!!error}
+        autoHideDuration={6000}
+        onClose={handleCloseError}
+        message={error}
+      />
+      <Grow
+        in
+      >
+        <Paper
+          sx={{py: 3, my: 2}}
         >
-          <Paper
-              sx={{py: 3, my: 2}}
-          >
-            <Container>
+          <Container>
+            <Grid
+              container
+              flexDirection={'column'}
+              spacing={2}
+            >
               <Grid
-                  container
-                  flexDirection={'column'}
-                  spacing={2}
+                item
               >
+                <TextField
+                  slotProps={{
+                    input: {
+                      startAdornment: (
+                        <InputAdornment position={'start'}>
+                          <SearchOutlined/>
+                        </InputAdornment>
+                      )
+                    }
+                  }}
+                  fullWidth
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  placeholder={'Поиск'}
+                  size={'small'}
+                />
+              </Grid>
+              <Grid item>
                 <Grid
-                    item
+                  container
+                  spacing={1}
                 >
-                  <TextField
-                      slotProps={{
-                        input: {
-                          startAdornment: (
-                              <InputAdornment position={'start'}>
-                                <SearchOutlined/>
-                              </InputAdornment>
-                          )
-                        }
-                      }}
-                      fullWidth
-                      value={searchQuery}
-                      onChange={handleSearchChange}
-                      placeholder={'Поиск'}
+                  <Grid item>
+                    <FormControl
+                      sx={{minWidth: 128}}
                       size={'small'}
-                  />
-                </Grid>
-                <Grid item>
-                  <Grid
-                      container
-                      spacing={1}
-                  >
-                    <Grid item>
-                      <FormControl
-                          sx={{minWidth: 128}}
-                          size={'small'}
-                          fullWidth
+                      fullWidth
+                    >
+                      <InputLabel
+                        id={'status-select-label'}
                       >
-                        <InputLabel
-                            id={'status-select-label'}
-                        >
-                          Статус
-                        </InputLabel>
-                        <Select
-                            labelId={'status-select-label'}
-                            id={'status-select'}
-                            value={statusFilter}
-                            label={'Статус'}
-                            onChange={handleStatusChange}
-                        >
-                          <MenuItem value={''}>Все</MenuItem>
-                          <MenuItem value={'WAITING'}>Ожидание</MenuItem>
-                          <MenuItem value={'IN_PROCESS'}>В работе</MenuItem>
-                          <MenuItem value={'DONE'}>Завершён</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </Grid>
-                    <Grid item>
-                      <FormControl
-                          sx={{minWidth: 128}}
-                          size={'small'}
-                          fullWidth
+                        Статус
+                      </InputLabel>
+                      <Select
+                        labelId={'status-select-label'}
+                        id={'status-select'}
+                        value={statusFilter}
+                        label={'Статус'}
+                        onChange={handleStatusChange}
                       >
-                        <InputLabel
-                            id={'date-select-label'}
-                        >
-                          Дата
-                        </InputLabel>
-                        <Select
-                            labelId={'date-select-label'}
-                            id={'date-select'}
-                            value={dateFilter}
-                            label={'Дата'}
-                            onChange={handleDateChange}
-                        >
-                          <MenuItem value={''}>Любая</MenuItem>
-                          <MenuItem value={'today'}>Сегодня</MenuItem>
-                          <MenuItem value={'tomorrow'}>Завтра</MenuItem>
-                          <MenuItem value={'week'}>На неделе</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </Grid>
+                        <MenuItem value={''}>Все</MenuItem>
+                        <MenuItem value={'WAITING'}>Ожидание</MenuItem>
+                        <MenuItem value={'IN_PROCESS'}>В работе</MenuItem>
+                        <MenuItem value={'DONE'}>Завершён</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item>
+                    <FormControl
+                      sx={{minWidth: 128}}
+                      size={'small'}
+                      fullWidth
+                    >
+                      <InputLabel
+                        id={'date-select-label'}
+                      >
+                        Дата
+                      </InputLabel>
+                      <Select
+                        labelId={'date-select-label'}
+                        id={'date-select'}
+                        value={dateFilter}
+                        label={'Дата'}
+                        onChange={handleDateChange}
+                      >
+                        <MenuItem value={''}>Любая</MenuItem>
+                        <MenuItem value={'today'}>Сегодня</MenuItem>
+                        <MenuItem value={'tomorrow'}>Завтра</MenuItem>
+                        <MenuItem value={'week'}>На неделе</MenuItem>
+                      </Select>
+                    </FormControl>
                   </Grid>
                 </Grid>
-                {filteredFacilities.length === 0 ? (
-                    <Grid item>
-                      <Typography>Нет объектов по заданным фильтрам</Typography>
-                    </Grid>
-                ) : (
-                    filteredFacilities.map((facility) => (
-                        <React.Fragment key={facility.id}>
-                          <Divider variant={'fullWidth'}/>
-                          <Link to={`/facility/${facility.id}`} style={{
-                            textDecoration: 'none',
-                            color: 'inherit'
-                          }}>
+              </Grid>
+              {filteredFacilities.length === 0 ? (
+                <Grid item>
+                  <Typography>Нет объектов по заданным фильтрам</Typography>
+                </Grid>
+              ) : (
+                filteredFacilities.map((facility) => (
+                  <React.Fragment key={facility.id}>
+                    <Divider variant={'fullWidth'}/>
+                    <Link to={`/facility/${facility.id}`} style={{
+                      textDecoration: 'none',
+                      color: 'inherit'
+                    }}>
+                      <Grid
+                        item
+                      >
+                        <Grid
+                          container
+                          spacing={1}
+                        >
+                          <Grid item>
+                            <Box
+                              component={'img'}
+                              src={'/64x64.svg'}
+                              sx={{
+                                borderRadius: 2,
+                                width: 64,
+                              }}
+                              alt={'Image error'}
+                            >
+                            </Box>
+                          </Grid>
+                          <Grid item>
                             <Grid
-                                item
+                              container
+                              flexDirection={'column'}
+                              spacing={1}
+                              sx={{minWidth: 0}}
                             >
                               <Grid
-                                  container
-                                  spacing={1}
+                                item
+                                sx={{
+                                  maxWidth: {
+                                    sm: '100%',
+                                    xs: 200
+                                  },
+                                }}
                               >
-                                <Grid item>
-                                  <Box
-                                      component={'img'}
-                                      src={'/64x64.svg'}
-                                      sx={{
-                                        borderRadius: 2,
-                                        width: 64,
-                                      }}
-                                      alt={'Image error'}
-                                  >
-                                  </Box>
-                                </Grid>
-                                <Grid item>
-                                  <Grid
-                                      container
-                                      flexDirection={'column'}
-                                      spacing={1}
-                                      sx={{minWidth: 0}}
-                                  >
-                                    <Grid
-                                        item
-                                        sx={{
-                                          maxWidth: {
-                                            sm: '100%',
-                                            xs: 200
-                                          },
-                                        }}
-                                    >
-                                      <Typography
-                                          fontWeight={'bold'}
-                                      >
-                                        {facility.title}
-                                      </Typography>
-                                    </Grid>
-                                    <Grid item>
-                                      <Chip
-                                          label={STATUS_LABELS[facility.status]}
-                                          color={STATUS_COLORS[facility.status] || 'default'}
-                                          size={'small'}
-                                          variant={'outlined'}
-                                      />
-                                    </Grid>
-                                  </Grid>
-                                </Grid>
+                                <Typography
+                                  fontWeight={'bold'}
+                                >
+                                  {facility.title}
+                                </Typography>
+                              </Grid>
+                              <Grid item>
+                                <Chip
+                                  label={STATUS_LABELS[facility.status]}
+                                  color={STATUS_COLORS[facility.status] || 'default'}
+                                  size={'small'}
+                                  variant={'outlined'}
+                                />
                               </Grid>
                             </Grid>
-                          </Link>
-                        </React.Fragment>
-                    )))}
-              </Grid>
-            </Container>
-          </Paper>
-        </Grow>
-      </>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Link>
+                  </React.Fragment>
+                )))}
+            </Grid>
+          </Container>
+        </Paper>
+      </Grow>
+    </>
   )
 }

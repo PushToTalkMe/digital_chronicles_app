@@ -6,7 +6,7 @@ import {grey} from '@mui/material/colors'
 import {
   ConstructionOutlined
 } from '@mui/icons-material'
-import axios from 'axios'
+import apiClient from '../apiClient'
 import {useNavigate} from 'react-router-dom'
 
 export const LoginPage = () => {
@@ -25,14 +25,14 @@ export const LoginPage = () => {
     }
     try {
       setLoading(true)
-      const res = await axios.post('/api/auth/login', {
-            login,
-            password,
-          }, {
-            headers: {
-              'Content-Type': 'application/json'
-            }
+      const res = await apiClient.post('/auth/login', {
+          login,
+          password,
+        }, {
+          headers: {
+            'Content-Type': 'application/json'
           }
+        }
       );
 
       localStorage.setItem('accessToken', res.data.data.token)
@@ -57,106 +57,106 @@ export const LoginPage = () => {
   }
 
   return (
-      <>
-        <Snackbar
-            anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
-            open={sbOpen}
-            autoHideDuration={6000}
-            onClose={handleCloseError}
-        >
+    <>
+      <Snackbar
+        anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
+        open={sbOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseError}
+      >
 
-          <Alert
-              onClose={handleCloseError}
-              severity={sbColor}
-              variant={'filled'}
-              sx={{width: '100%'}}
-          >
-            {message}
-          </Alert>
-        </Snackbar>
-        <Grow
-            in
+        <Alert
+          onClose={handleCloseError}
+          severity={sbColor}
+          variant={'filled'}
+          sx={{width: '100%'}}
         >
-          <Paper
-              sx={{p: 4, my: 2}}
+          {message}
+        </Alert>
+      </Snackbar>
+      <Grow
+        in
+      >
+        <Paper
+          sx={{p: 4, my: 2}}
+        >
+          <Grid
+            container
+            justifyContent={'center'}
+            alignItems={'center'}
+            flexDirection={'column'}
+            spacing={2}
           >
             <Grid
-                container
-                justifyContent={'center'}
-                alignItems={'center'}
-                flexDirection={'column'}
-                spacing={2}
+              item
             >
-              <Grid
-                  item
-              >
-                <ConstructionOutlined
-                    color={'primary'}
-                    fontSize={'large'}
-                />
-              </Grid>
-              <Grid
-                  item
-              >
-                <Typography
-                    variant={'h5'}
-                    align={'center'}
-                >
-                  Войдите в свой аккаунт
-                </Typography>
-                <Typography
-                    variant={'caption'}
-                    align={'center'}
-                    color={grey[500]}
-                >
-                  Для управления строительными работами
-                </Typography>
-              </Grid>
-              <Grid
-                  item
-              >
-                <TextField
-                    label={'Логин'}
-                    value={login}
-                    onChange={(e) => setLogin(e.target.value)}
-                    placeholder={'Ваш логин'}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') loginHandler().then(() => false)
-                    }}
-                    fullWidth
-                    required
-                />
-              </Grid>
-              <Grid
-                  item
-              >
-                <TextField
-                    label={'Пароль'}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder={'Ваш пароль'}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') loginHandler().then(() => false)
-                    }}
-                    type={'password'}
-                    fullWidth
-                    required
-                />
-              </Grid>
-              <Grid
-                  item
-              >
-                <Button
-                    variant={'contained'}
-                    fullWidth
-                    onClick={loginHandler}
-                >
-                  Войти
-                </Button>
-              </Grid>
+              <ConstructionOutlined
+                color={'primary'}
+                fontSize={'large'}
+              />
             </Grid>
-          </Paper>
-        </Grow>
-      </>
+            <Grid
+              item
+            >
+              <Typography
+                variant={'h5'}
+                align={'center'}
+              >
+                Войдите в свой аккаунт
+              </Typography>
+              <Typography
+                variant={'caption'}
+                align={'center'}
+                color={grey[500]}
+              >
+                Для управления строительными работами
+              </Typography>
+            </Grid>
+            <Grid
+              item
+            >
+              <TextField
+                label={'Логин'}
+                value={login}
+                onChange={(e) => setLogin(e.target.value)}
+                placeholder={'Ваш логин'}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') loginHandler().then(() => false)
+                }}
+                fullWidth
+                required
+              />
+            </Grid>
+            <Grid
+              item
+            >
+              <TextField
+                label={'Пароль'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder={'Ваш пароль'}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') loginHandler().then(() => false)
+                }}
+                type={'password'}
+                fullWidth
+                required
+              />
+            </Grid>
+            <Grid
+              item
+            >
+              <Button
+                variant={'contained'}
+                fullWidth
+                onClick={loginHandler}
+              >
+                Войти
+              </Button>
+            </Grid>
+          </Grid>
+        </Paper>
+      </Grow>
+    </>
   )
 }
