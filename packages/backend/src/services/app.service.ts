@@ -13,6 +13,7 @@ export interface AppStartupResult {
 
 export class AppService {
     private databaseService: DatabaseService;
+
     private serversManager: ServersManager;
 
     constructor() {

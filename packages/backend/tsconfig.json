@@ -7,6 +7,7 @@
         "moduleResolution": "node",
         "outDir": "./dist",
         "rootDir": "./",
+        "allowJs": true,
         "strict": true,
         "esModuleInterop": true,
         "skipLibCheck": true,
@@ -29,7 +30,8 @@
             "@config": ["src/config"],
             "@servers/*": ["src/servers/*"],
             "@services/*": ["src/services/*"],
-            "@utils/*": ["src/utils/*"]
+            "@utils/*": ["src/utils/*"],
+            "@types/*": ["src/types/*"]
         }
     },
     "include": ["src/**/*"],

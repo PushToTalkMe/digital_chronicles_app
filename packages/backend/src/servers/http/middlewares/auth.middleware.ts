@@ -39,7 +39,7 @@ export class AuthMiddleware {
             });
 
             if (!userRecord) {
-                res.status(401).json({
+                res.status(404).json({
                     success: false,
                     error: 'Пользователь не найден',
                 });
