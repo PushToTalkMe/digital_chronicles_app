@@ -405,7 +405,7 @@ export class FacilityController {
             });
 
             if (!userCustomer) {
-                res.status(400).json({
+                res.status(404).json({
                     success: false,
                     data: {
                         message: 'Данного подрядчика не существует',

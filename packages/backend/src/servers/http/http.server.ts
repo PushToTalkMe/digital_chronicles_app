@@ -5,6 +5,7 @@ import { HttpServerConfig } from '@config';
 import { ServersManagerState } from '@servers/manager/servers.manager.interface';
 import { apiRoutes } from './routes';
 import { PrismaClient } from '@prisma/client';
+import { OcrServiceFactory } from '@services/ocr';
 
 export class HttpServer {
     private readonly app: Express;
@@ -19,7 +20,7 @@ export class HttpServer {
         this.setupMiddleware();
     }
 
-    private setupMiddleware() {
+    private async setupMiddleware() {
         this.app.use(
             cors({
                 origin: this.config.corsOrigins,
@@ -39,6 +40,11 @@ export class HttpServer {
         );
         this.app.use((req, _res, next) => {
             req.database = this.database;
+            next();
+        });
+        const ocr = await this.setupOcr();
+        this.app.use((req, _res, next) => {
+            req.ocr = ocr;
             next();
         });
         this.app.use('/api', apiRoutes);
@@ -65,5 +71,10 @@ export class HttpServer {
                 reject(error);
             }
         });
+    }
+
+    private async setupOcr() {
+        const ocr = await new OcrServiceFactory().generate();
+        return ocr;
     }
 }

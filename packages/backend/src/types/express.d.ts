@@ -1,10 +1,12 @@
 import { Request } from 'express';
 import { PrismaClient, User, UserRole } from '@prisma/client';
+import { OcrService } from '@services/ocr';
 
 declare global {
     namespace Express {
         interface Request {
             database: PrismaClient;
+            ocr: OcrService;
             authenticatedUser?: AuthenticatedUser;
         }
     }
