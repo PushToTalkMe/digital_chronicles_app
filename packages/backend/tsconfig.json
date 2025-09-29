@@ -31,10 +31,9 @@
             "@servers/*": ["src/servers/*"],
             "@services/*": ["src/services/*"],
             "@utils/*": ["src/utils/*"],
-            "@types/*": ["src/types/*"],
-            "@libs/opencv": ["libs/opencv.js"]
+            "@types/*": ["src/types/*"]
         }
     },
-    "include": ["src/**/*", "libs/**/*"],
+    "include": ["src/**/*"],
     "exclude": ["node_modules", "dist"]
 }

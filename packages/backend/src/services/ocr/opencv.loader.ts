@@ -1,3 +1,5 @@
+import { dirname, join } from 'path';
+
 export class OpenCVLoader {
     private isLoaded = false;
 
@@ -13,13 +15,19 @@ export class OpenCVLoader {
             };
 
             try {
-                const cvModule = await import('@libs/opencv'!);
-                global.cv = cvModule.default;
+                const projectRoot = this.getProjectRoot();
+                const opencvPath = join(projectRoot, '../libs/opencv.js');
+                const cvModule = require(opencvPath);
+                global.cv = cvModule;
             } catch (error) {
                 console.error('Failed to load OpenCV:', error);
                 throw error;
             }
         });
+    }
+
+    private getProjectRoot(): string {
+        return dirname(require.main?.filename || process.cwd());
     }
 
     getCV(): any {
