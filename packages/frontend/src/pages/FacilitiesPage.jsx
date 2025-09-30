@@ -1,7 +1,26 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useCallback} from 'react'
 import {
-  Box, Container, Divider, FormControl, Grid, InputAdornment, InputLabel,
-  MenuItem, Paper, Select, TextField, Typography, Grow, Chip, Snackbar
+  Box,
+  Container,
+  Divider,
+  FormControl,
+  Grid,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  TextField,
+  Typography,
+  Grow,
+  Chip,
+  Snackbar,
+  Button,
+  Alert,
+  Dialog,
+  DialogContent,
+  DialogContentText,
+  DialogActions
 } from '@mui/material'
 import {SearchOutlined} from '@mui/icons-material'
 import {Link} from 'react-router-dom'
@@ -58,24 +77,56 @@ export const FacilitiesPage = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  useEffect(() => {
-    const loadFacilities = async () => {
-      try {
-        setLoading(true)
-        const res = await apiClient.get('/facility')
-        setFacilities(res.data.data.facilities)
-        setError(null)
-      } catch (err) {
-        setError('Не удалось загрузить объекты')
-        console.error('Ошибка загрузки facilities:', err)
-      } finally {
-        setLoading(false)
-      }
-    }
+  const [sbOpen, setSbOpen] = useState(false)
+  const [sbColor, setSbColor] = useState('')
+  const [sbMessage, setSbMessage] = useState('')
 
+  const [dOpen, setDOpen] = useState(false)
+  const [dContent, setDContent] = useState('')
+  const [dApplyText, setDApplyText] = useState('')
+
+  const [fId, setFId] = useState('')
+
+  const loadFacilities = useCallback(async () => {
+    try {
+      setLoading(true)
+      const res = await apiClient.get('/facility')
+      setFacilities(res.data.data.facilities)
+      setError(null)
+    } catch (err) {
+      setError('Не удалось загрузить объекты')
+      console.error('Ошибка загрузки facilities:', err)
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
     loadFacilities()
   }, [])
 
+  const sendActivate = async () => {
+    try {
+      setLoading(true)
+      await apiClient.post(`/facility/activate/${fId}`)
+      await apiClient.get(`/facility/${fId}`)
+      setFId('')
+    } catch (err) {
+      setLoading(false)
+      console.error(err)
+      loadFacilities()
+    } finally {
+      setLoading(false)
+      loadFacilities()
+    }
+  }
+
+  const handleActivate = (id) => {
+    setDOpen(true)
+    setDContent('Активировать объект и начать работы?')
+    setDApplyText('Активировать')
+    setFId(id)
+  }
 
   const filteredFacilities = facilities.filter(facility => {
     if (statusFilter && facility.status !== statusFilter) return false
@@ -95,16 +146,53 @@ export const FacilitiesPage = () => {
     setError(null)
   }
 
+  const sbHandleClose = () => {
+    setSbOpen(false)
+  }
+
+  const dCloseHandler = () => {
+    setDOpen(false)
+  }
+
   return (
     <>
       <Loading status={loading}/>
+
+      <Dialog
+        open={dOpen}
+        onClose={dCloseHandler}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            {dContent}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={dCloseHandler}>Отмена</Button>
+          <Button onClick={sendActivate} autoFocus>
+            {dApplyText}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <Snackbar
-        anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
-        open={!!error}
+        anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
+        open={sbOpen}
         autoHideDuration={6000}
-        onClose={handleCloseError}
-        message={error}
-      />
+        onClose={sbHandleClose}
+      >
+
+        <Alert
+          onClose={sbHandleClose}
+          severity={'error'}
+          sx={{width: '100%'}}
+        >
+          {sbMessage}
+        </Alert>
+      </Snackbar>
+
       <Grow
         in
       >
@@ -202,13 +290,13 @@ export const FacilitiesPage = () => {
                 filteredFacilities.map((facility) => (
                   <React.Fragment key={facility.id}>
                     <Divider variant={'fullWidth'}/>
-                    <Link to={`/facility/${facility.id}`} style={{
-                      textDecoration: 'none',
-                      color: 'inherit'
-                    }}>
-                      <Grid
-                        item
-                      >
+                    <Grid
+                      item
+                    >
+                      <Link to={`/facility/${facility.id}`} style={{
+                        textDecoration: 'none',
+                        color: 'inherit'
+                      }}>
                         <Grid
                           container
                           spacing={1}
@@ -258,8 +346,21 @@ export const FacilitiesPage = () => {
                             </Grid>
                           </Grid>
                         </Grid>
+                      </Link>
+                      {facility.status === 'WAITING' &&
+                      <Grid item>
+                        <Button
+                          variant={'outlined'}
+                          size={'small'}
+                          sx={{mt: 1}}
+                          onClick={() => handleActivate(facility.id)}
+                          fullWidth
+                        >
+                          Активировать
+                        </Button>
                       </Grid>
-                    </Link>
+                      }
+                    </Grid>
                   </React.Fragment>
                 )))}
             </Grid>

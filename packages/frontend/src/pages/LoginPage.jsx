@@ -36,6 +36,7 @@ export const LoginPage = () => {
       );
 
       localStorage.setItem('accessToken', res.data.data.token)
+      localStorage.setItem('role', res.data.data.user.role)
 
       setLoading(false)
       setSbColor('success')
@@ -68,7 +69,6 @@ export const LoginPage = () => {
         <Alert
           onClose={handleCloseError}
           severity={sbColor}
-          variant={'filled'}
           sx={{width: '100%'}}
         >
           {message}
