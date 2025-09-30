@@ -14,6 +14,7 @@ model User {
   firstName    String
   lastName     String
   passwordHash String
+  company      String
   role         UserRole
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt @default(now())
@@ -107,8 +108,9 @@ model ListOfWork {
 
 model Material {
   id  Int @id @default(autoincrement())
-  name String
-  volume String
+  title String
+  cargo String
+  weight String
 
   listOfWorkId Int
   listOfWork ListOfWork @relation(fields: [listOfWorkId], references: [id])

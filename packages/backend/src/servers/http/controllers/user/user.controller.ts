@@ -39,6 +39,7 @@ export class UserController {
                     firstName: true,
                     lastName: true,
                     role: true,
+                    company: true,
                 },
                 orderBy: { createdAt: 'desc' },
                 skip: offset,
