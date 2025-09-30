@@ -1,9 +1,12 @@
 import {
+    CategoryOfClassifier,
     ListOfMeasurement,
     PrismaClient,
     StatusFacility,
+    TypeOfClassifier,
     User,
     UserRole,
+    ViewOfClassifier,
 } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -1813,20 +1816,590 @@ const FACILITIES = [
     },
 ];
 
+const CLASSIFIERS = [
+    {
+        category: CategoryOfClassifier.PRODUCTION_CULTURE,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Несвоевременный вывоз строительного мусора, более суток',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_CULTURE,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Нарушение места складирования строительного мусора',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_CULTURE,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Мусор в зоне производства работ',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_CULTURE,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Складирование скола асфальта более суток',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_CULTURE,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Нарушение места складирования строительного материала',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_CULTURE,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Складирование строительных материалов и отходов производства работ вне специально отведенных мест',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_CULTURE,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Не оборудованы пути прохода пешеходов (пешеходные галерии, настилы, перила, мостки)',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_CULTURE,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Не обеспечен безопасный проход пешеходов / проезд транспорта',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_CULTURE,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Отсутствуют ограждения мест производства работ',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_CULTURE,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Неудовлетворительный внешний вид ограждения',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_CULTURE,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Отсутствуют временные дорожные знаки/установлены не в полном объеме',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_CULTURE,
+        view: ViewOfClassifier.UNAVOIDABLE,
+        type: TypeOfClassifier.SIMPLE,
+        title: 'Выполнение работ без форменной одежды',
+        deadline: 0,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_CULTURE,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Отсутствует аварийное освещение',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_CULTURE,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Вынос грязи на покрытие с объекта ремонта',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_CULTURE,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Не обеспечена защита стволов деревьев',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_CULTURE,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Доступ на детскую площадку не ограничен, при этом работы не завершены',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.DOCUMENTATION,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Отсутствует информационный щит',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.DOCUMENTATION,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Не корректная (не полная) информация на информационном щите',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.DOCUMENTATION,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Не удовлетворительное состояние информационного щита',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.DOCUMENTATION,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Отсутствует уведомление о начале производства работ',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.DOCUMENTATION,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.SIMPLE,
+        title: 'Отсутсвие документации на объекте (Журналы, Проект и т.д.)',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.DOCUMENTATION,
+        view: ViewOfClassifier.UNAVOIDABLE,
+        type: TypeOfClassifier.SIMPLE,
+        title: 'Отсутствие Rf-Id меток на игровом и спортивном оборудовании детских игровых и спортивных площадок',
+        deadline: 0,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_TECHNOLOGY,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Установка поврежденного бортового камня',
+        deadline: 5,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_TECHNOLOGY,
+        view: ViewOfClassifier.UNAVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Укладка асфальтобетонной смеси при неблагоприятных погодных условиях',
+        deadline: 0,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_TECHNOLOGY,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Нарушение технологии установки бортового камня: \n- Отсутствует песчаное/щебеночное основание;\n- Устройство бетонного замка без установки опалубки;\n- Установка бортового камня на неровное основания из бетона, наличие многочисленных пустот между бортовым камнем и основанием;\n- Отсутствие/разрушение бетонного замка.',
+        deadline: 5,
+    },
+    {
+        category: CategoryOfClassifier.ABP_LAYING_TECHNOLOGY,
+        view: ViewOfClassifier.UNAVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Укладка асфальтобетонной смеси без разборки старого покрытия ',
+        deadline: 0,
+    },
+    {
+        category: CategoryOfClassifier.ABP_LAYING_TECHNOLOGY,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Устройство слоёв оснований из материалов, не предусмотренных проектом',
+        deadline: 5,
+    },
+    {
+        category: CategoryOfClassifier.ABP_LAYING_TECHNOLOGY,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Укладка асфальтобетонной смеси на покрытие проезжей части, не обработанное эмульсией',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_TECHNOLOGY,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Проезжая часть не очищена от остатков фрезерования асфальтобетона, пыли и грязи',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_TECHNOLOGY,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Не произведена установка ограждений или устранение ям, выбоин на отфрезерованном покрытии',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_TECHNOLOGY,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.SIMPLE,
+        title: 'Установка МАФ с дефектом ',
+        deadline: 5,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_TECHNOLOGY,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.SIMPLE,
+        title: 'Нарушение проектных вертикальных и горизонтальных отметок плиточного покрытия',
+        deadline: 5,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_TECHNOLOGY,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.SIMPLE,
+        title: 'Разность высот между смежными камнями/плитами, рядом с желобами, рядом со встраиваемыми элементами и прилегающими покрытиями не соответствует регламенту',
+        deadline: 5,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_TECHNOLOGY,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.SIMPLE,
+        title: 'Не соблюдение ширины межплиточного шва ',
+        deadline: 5,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_TECHNOLOGY,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.SIMPLE,
+        title: 'Нарушение технологии устройства плиточного мощения (не соблюдение толщины подстилающего) слоя',
+        deadline: 5,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_TECHNOLOGY,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.SIMPLE,
+        title: 'Межплиточные швы заполнены не на всю высоту',
+        deadline: 5,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_TECHNOLOGY,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.SIMPLE,
+        title: 'Не укреплена обочина проезжей части в местах отсутствия бортового камня',
+        deadline: 5,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_TECHNOLOGY,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Нарушение конструкции дорожной одежды (нарушение проектной высоты слоев дорожной одежды)',
+        deadline: 5,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_TECHNOLOGY,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.SIMPLE,
+        title: 'Отсутствует сигнальная лента при укладке электрокабеля',
+        deadline: 5,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_TECHNOLOGY,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.SIMPLE,
+        title: 'Осутствуют подстилающие слои из песка при укладке инженерных коммуникаций',
+        deadline: 5,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_TECHNOLOGY,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.SIMPLE,
+        title: 'Нарушение вертикальных отметок при установке ОЛХ',
+        deadline: 5,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_TECHNOLOGY,
+        view: ViewOfClassifier.UNAVOIDABLE,
+        type: TypeOfClassifier.SIMPLE,
+        title: 'Сколы, отклонение вертикальных и горизонтальных отметок бортового камня в процессе работ по благоустройству',
+    },
+    {
+        category: CategoryOfClassifier.PROJECT_SOLUTION,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.SIMPLE,
+        title: 'Нарушение зоны безопасности МАФ (наличие твердых покрытий, ОЛХ, бортовых камней, приствольных металлических решеток, МАФ, пересечение зон безопасности, зеленых насаждений) ',
+        deadline: 5,
+    },
+    {
+        category: CategoryOfClassifier.PROJECT_SOLUTION,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.SIMPLE,
+        title: 'Нарушение проектной высоты от поверхности площадки до элементов МАФ',
+        deadline: 5,
+    },
+    {
+        category: CategoryOfClassifier.OLX_INSTALLATION_TECHNOLOGY,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Установка обечайки смотрового колодца производится на строительный мусор (асфальтобетонный скол, обрезки досок и т.п.)',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.LAWN_TECHNOLOGY,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Не выполнена разработка грунта перед устройством газона',
+        deadline: 5,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_CULTURE,
+        view: ViewOfClassifier.UNAVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Произведена вырубка корневой системы зеленых насаждений',
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_TECHNOLOGY,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Не произведена затяжка/отсутствие болтовых соединений МАФ',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_TECHNOLOGY,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Не выполнено уплотнение слоев оснований дорожных покрытий',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_TECHNOLOGY,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Нарушение укладки геотекстиля под основания дорожных покрытий (не выполнена натяжка, не на всю ширину, отсутствует нахлест)',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.DOCUMENTATION,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.SIMPLE,
+        title: 'Несвоевременное ведение Общего журнала работ подрядными организациями, заказчиками',
+        deadline: 3,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_TECHNOLOGY,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Использование нестандартных элементов бортового камня (перевернутый радиусный элемент, обрезанные элементы менее 40 см., радиусы из мелко-напиленных прямолинейных бортовых камней)',
+        deadline: 3,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_CULTURE,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Работа бензорезом вне специально отведенных мест, без использования воды',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_CULTURE,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Несвоевременный вывоз строительного мусора, более суток',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_CULTURE,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Складирование строительного мусора на газоне',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_CULTURE,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Складирование скола асфальта более суток',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_CULTURE,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Складирование материалов на газоне',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.PRODUCTION_CULTURE,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Складирование строительных материалов и отходов производства работ вне специально отведенных мест',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.COMPLETED_WORKS,
+        view: ViewOfClassifier.UNAVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Нарушение продольных, поперечных уклонов пешеходных дорожек, тротуаров требованиям нормативов для маломобильных граждан',
+        deadline: 0,
+    },
+    {
+        category: CategoryOfClassifier.COMPLETED_WORKS,
+        view: ViewOfClassifier.UNAVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Нарушение ровности покрытия, необеспечение водоотвода, наличие мест застоя воды',
+        deadline: 0,
+    },
+    {
+        category: CategoryOfClassifier.COMPLETED_WORKS,
+        view: ViewOfClassifier.UNAVOIDABLE,
+        type: TypeOfClassifier.SIMPLE,
+        title: 'Не произведена очистка объекта люкового хозяйства от остатков асфальтобетонной смеси',
+        deadline: 0,
+    },
+    {
+        category: CategoryOfClassifier.COMPLETED_WORKS,
+        view: ViewOfClassifier.UNAVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Сколы, отклонения бортовых камней от проектного положения',
+        deadline: 0,
+    },
+    {
+        category: CategoryOfClassifier.COMPLETED_WORKS,
+        view: ViewOfClassifier.UNAVOIDABLE,
+        type: TypeOfClassifier.SIMPLE,
+        title: 'Не восстановлено покрытие после установки бортового камня/опоры освещения/прокладки коммуникаций',
+        deadline: 0,
+    },
+    {
+        category: CategoryOfClassifier.COMPLETED_WORKS,
+        view: ViewOfClassifier.UNAVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Не нормативное понижение бортового камня/пандуса',
+        deadline: 0,
+    },
+    {
+        category: CategoryOfClassifier.COMPLETED_WORKS,
+        view: ViewOfClassifier.UNAVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Дефекты асфальтобетонного покрытия (разрушения, растрескивания, выкрашивания и пр.)',
+        deadline: 0,
+    },
+    {
+        category: CategoryOfClassifier.COMPLETED_WORKS,
+        view: ViewOfClassifier.UNAVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Занижение/завышение крышек люков, решеток дождеприемника и коверов.',
+        deadline: 0,
+    },
+    {
+        category: CategoryOfClassifier.COMPLETED_WORKS,
+        view: ViewOfClassifier.UNAVOIDABLE,
+        type: TypeOfClassifier.SIMPLE,
+        title: 'Механическое повреждение крышек люков, решеток дождеприемника и ковера.',
+        deadline: 0,
+    },
+    {
+        category: CategoryOfClassifier.COMPLETED_WORKS,
+        view: ViewOfClassifier.UNAVOIDABLE,
+        type: TypeOfClassifier.SIMPLE,
+        title: 'Не восстановлены ИДН, МАФы, дорожные знаки, ограждения.',
+        deadline: 0,
+    },
+    {
+        category: CategoryOfClassifier.COMPLETED_WORKS,
+        view: ViewOfClassifier.UNAVOIDABLE,
+        type: TypeOfClassifier.SIMPLE,
+        title: 'Разметка не нанесена',
+        deadline: 0,
+    },
+    {
+        category: CategoryOfClassifier.COMPLETED_WORKS,
+        view: ViewOfClassifier.UNAVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Не восстановлен утраченный травяной покров газона',
+        deadline: 0,
+    },
+    {
+        category: CategoryOfClassifier.COMPLETED_WORKS,
+        view: ViewOfClassifier.UNAVOIDABLE,
+        type: TypeOfClassifier.SIMPLE,
+        title: 'Не обеспечена устойчивость и бесшумность крышек люков, решеток дождеприемников и коверов при наезде автотранспорта.',
+        deadline: 0,
+    },
+    {
+        category: CategoryOfClassifier.COMPLETED_WORKS,
+        view: ViewOfClassifier.UNAVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Коллейность на асфальтобетонном покрытии',
+        deadline: 0,
+    },
+    {
+        category: CategoryOfClassifier.COMPLETED_WORKS,
+        view: ViewOfClassifier.UNAVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Выпотевание битума на асфальтобетонном покрытии',
+        deadline: 0,
+    },
+    {
+        category: CategoryOfClassifier.COMPLETED_WORKS,
+        view: ViewOfClassifier.UNAVOIDABLE,
+        type: TypeOfClassifier.SIMPLE,
+        title: 'Крышки люков и решетки дождеприемников отклонены в плане от проектного положения, развернуты на 90/180° ',
+        deadline: 0,
+    },
+    {
+        category: CategoryOfClassifier.COMPLETED_WORKS,
+        view: ViewOfClassifier.UNAVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Не выполнена замена/ремонт верхнего оборудования ОЛХ (опорной плиты, доборных колец)',
+        deadline: 0,
+    },
+    {
+        category: CategoryOfClassifier.COMPLETED_WORKS,
+        view: ViewOfClassifier.UNAVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Не выполнена установка повышенного бортового камня в местах ООТ и на виражах',
+        deadline: 0,
+    },
+    {
+        category: CategoryOfClassifier.COMPLETED_WORKS,
+        view: ViewOfClassifier.UNAVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Радиусы б/к выполнены из мелко-напиленных прямолинейных бортовых камней',
+        deadline: 0,
+    },
+    {
+        category: CategoryOfClassifier.COMPLETED_WORKS,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Не выполнена планировка грунта на газоне (ямы, бугры), не выполнено уплотнение плодородного слоя',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.COMPLETED_WORKS,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Наличие строительного мусора в грунте (кирпичный бой, стекла и пр.)',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.COMPLETED_WORKS,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.SIMPLE,
+        title: 'Наличие сорняка на травяном покрове газонного покрытия, не произведен покос травяного покрова (более 15 см.)',
+        deadline: 1,
+    },
+    {
+        category: CategoryOfClassifier.COMPLETED_WORKS,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Отсутствует электроснабжение павильонов ООТ, пилонов, стелл',
+        deadline: 0,
+    },
+    {
+        category: CategoryOfClassifier.COMPLETED_WORKS,
+        view: ViewOfClassifier.AVOIDABLE,
+        type: TypeOfClassifier.ROUGH,
+        title: 'Установка обечайки смотрового колодца производится на строительный мусор (асфальтобетонный скол, обрезки досок и т.п.)',
+        deadline: 0,
+    },
+];
+
 const prisma = new PrismaClient();
 
 async function main() {
     try {
-        const users = await initUsers();
-        const facilities = await initFacilities();
+        await initUsers();
+        await initFacilities();
+        await initClassifiers();
 
-        const customerId =
-            users.find((user) => user.role === UserRole.CUSTOMER)?.id || '';
-        const technicalCustomerId =
-            users.find((user) => user.role === UserRole.TECHNICAL_CUSTOMER)
-                ?.id || '';
-
-        const result = await updateFacilities(customerId, technicalCustomerId);
+        const result = await updateFacilities();
 
         if (!result.success) {
             throw new Error(result.message);
@@ -1860,20 +2433,20 @@ async function initFacilities() {
     return facilities;
 }
 
-async function updateFacilities(
-    customerId: string,
-    technicalCustomerId: string
-) {
+async function initClassifiers() {
+    const facilities = await prisma.classifier.createManyAndReturn({
+        data: CLASSIFIERS,
+    });
+
+    return facilities;
+}
+
+async function updateFacilities() {
     try {
         await Promise.all(
             FACILITIES.map(async (FACILITY) => {
                 await initPolygonForFacility(FACILITY.coordinates, FACILITY.id);
                 await initListOfWorks(FACILITY.listOfWorks, FACILITY.id);
-                // await connectCustomersAndTechnicalCustomersToFacility(
-                //     FACILITY.id,
-                //     customerId,
-                //     technicalCustomerId
-                // );
             })
         );
         return { success: true, message: 'Объекты успешно изменены' };
@@ -1896,28 +2469,6 @@ async function initPolygonForFacility(
         },
     });
 }
-
-// async function connectCustomersAndTechnicalCustomersToFacility(
-//     facilityId: string,
-//     customerId: string,
-//     technicalCustomerId: string
-// ) {
-// await prisma.facility.update({
-//     where: { id: facilityId },
-//     data: {
-//         user: {
-//             connect: [
-//                 {
-//                     id: customerId,
-//                 },
-//                 {
-//                     id: technicalCustomerId,
-//                 },
-//             ],
-//         },
-//     },
-// });
-// }
 
 async function initListOfWorks(
     listOfWorks: {

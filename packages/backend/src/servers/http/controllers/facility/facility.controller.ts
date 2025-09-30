@@ -111,6 +111,11 @@ export class FacilityController {
                         req.authenticatedUser.role === UserRole.CUSTOMER
                             ? { where: { role: UserRole.CONTRACTOR } }
                             : false,
+                    violations: {
+                        include: {
+                            classifier: true,
+                        },
+                    },
                 },
             });
 
@@ -323,6 +328,11 @@ export class FacilityController {
                         req.authenticatedUser.role === UserRole.CUSTOMER
                             ? { where: { role: UserRole.CONTRACTOR } }
                             : false,
+                    violations: {
+                        include: {
+                            classifier: true,
+                        },
+                    },
                 },
             });
 

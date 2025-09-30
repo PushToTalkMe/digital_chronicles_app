@@ -98,6 +98,8 @@ export class GpsMiddleware {
                 return;
             }
 
+            req.locationUser = location;
+
             next();
         } catch (error) {
             res.status(500).json({
