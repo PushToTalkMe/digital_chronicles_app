@@ -37,6 +37,7 @@ model Facility {
   polygon Polygon?
   actOfOpening ActOfOpeningFacility?
   listOfWorks ListOfWork[]
+  violations Violation[]
   
   @@map("facilities")
 }
@@ -118,6 +119,33 @@ model Material {
   @@map("materials")
 }
 
+model Violation {
+  id  Int @id @default(autoincrement())
+  files String[]
+  time DateTime @default(now())
+
+  classifierId Int
+  classifier Classifier @relation(fields: [classifierId], references: [id])
+
+  facilityId String
+  facility Facility @relation(fields: [facilityId],references: [id])
+
+  @@map("violations")
+}
+
+model Classifier {
+  id Int @id @default(autoincrement())
+  deadline Int @default(0)
+  title String
+  category CategoryOfClassifier
+  view ViewOfClassifier
+  type TypeOfClassifier
+
+  violation Violation[]
+
+  @@map("classifiers")
+}
+
 enum UserRole {
   CUSTOMER
   TECHNICAL_CUSTOMER
@@ -148,4 +176,25 @@ enum ListOfMeasurement {
   RUNNING_METER
   SQUARE_METER
   PIECE
+}
+
+enum CategoryOfClassifier {
+  COMPLETED_WORKS
+  PRODUCTION_CULTURE
+  DOCUMENTATION
+  PRODUCTION_TECHNOLOGY
+  ABP_LAYING_TECHNOLOGY
+  PROJECT_SOLUTION
+  OLX_INSTALLATION_TECHNOLOGY
+  LAWN_TECHNOLOGY
+}
+
+enum ViewOfClassifier {
+  AVOIDABLE
+  UNAVOIDABLE
+}
+
+enum TypeOfClassifier {
+  ROUGH
+  SIMPLE
 }

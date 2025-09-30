@@ -51,6 +51,17 @@ export class MaterialController {
                 return;
             }
 
+            if (!req?.file) {
+                res.status(400).json({
+                    success: false,
+                    data: {
+                        message:
+                            'Нужно изображение в body типа multipart в свойстве file',
+                    },
+                });
+                return;
+            }
+
             if (req.file) {
                 const ocr = req.ocr;
 
@@ -83,6 +94,13 @@ export class MaterialController {
     public async approveMaterial(req: AuthenticatedRequest, res: Response) {
         const { id: workId } = req.params;
         const body = req.body;
+        if (!workId) {
+            res.status(400).json({
+                success: false,
+                data: { message: 'Укажите id состав работ в params' },
+            });
+            return;
+        }
 
         try {
             const listOfWork = await req.database.listOfWork.findUnique({
