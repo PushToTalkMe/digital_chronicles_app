@@ -4,6 +4,8 @@ import { authRoutes } from './auth.routes';
 import { facilityRoutes } from './facility.routes';
 import { userRoutes } from './user.routes';
 import { materialRoutes } from './material.routes';
+import { violationRoutes } from './violation.routes';
+import { fileRoutes } from './file.routes';
 
 export const apiRoutes = Router();
 
@@ -15,6 +17,8 @@ apiRoutes.use('/auth', authRoutes);
 apiRoutes.use('/facility', facilityRoutes);
 apiRoutes.use('/user', userRoutes);
 apiRoutes.use('/material', materialRoutes);
+apiRoutes.use('/violation', violationRoutes);
+apiRoutes.use('/file', fileRoutes);
 
 apiRoutes.use(/\*/, (_req, res) => {
     res.status(404).json({
