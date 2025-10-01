@@ -15,7 +15,8 @@
         "start:backend": "npm run start -w backend",
         "start:frontend": "npm run preview -w frontend",
         "docker:build": "docker-compose up --build",
-        "docker:build:log": "docker build --no-cache --progress=plain -f packages/backend/Dockerfile ."
+        "docker:build:log": "docker build --no-cache --progress=plain -f packages/backend/Dockerfile .",
+        "docker:build:force": "docker-compose down -v && docker-compose up --build --force-recreate"
     },
     "repository": {
         "type": "git",
