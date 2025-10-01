@@ -40,11 +40,11 @@ export const LoginPage = () => {
 
       setLoading(false)
       setSbColor('success')
-      setMessage('Успешный вход. Вы будете перенаправлены на главную страницу через 3 секунды...')
+      setMessage(`Успешный вход. Вы будете перенаправлены на главную страницу через 1 секунду...`)
       sbSetOpen(true)
       setTimeout(() => {
         navigate('/')
-      }, 3000)
+      }, 1000)
     } catch (err) {
       setLoading(false)
       setSbColor('error')

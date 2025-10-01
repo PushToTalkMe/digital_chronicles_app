@@ -96,6 +96,10 @@ export const FacilitiesPage = () => {
     } catch (err) {
       setError('Не удалось загрузить объекты')
       console.error('Ошибка загрузки facilities:', err)
+      if (err.response.data.error === 'Пользователь не найден') {
+        localStorage.removeItem('accessToken')
+        location.reload()
+      }
     } finally {
       setLoading(false)
     }
@@ -112,10 +116,12 @@ export const FacilitiesPage = () => {
       await apiClient.get(`/facility/${fId}`)
       setFId('')
     } catch (err) {
+      setDOpen(false)
       setLoading(false)
       console.error(err)
       loadFacilities()
     } finally {
+      setDOpen(false)
       setLoading(false)
       loadFacilities()
     }
@@ -171,7 +177,7 @@ export const FacilitiesPage = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={dCloseHandler}>Отмена</Button>
-          <Button onClick={sendActivate} autoFocus>
+          <Button onClick={sendActivate} color={'success'} autoFocus>
             {dApplyText}
           </Button>
         </DialogActions>
