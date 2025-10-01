@@ -1,6 +1,8 @@
 FROM node:22.20.0-alpine AS builder
-# Установка системных зависимостей
-RUN apk add --no-cache \
+
+RUN echo "https://mirror.yandex.ru/mirrors/alpine/v3.22/main" > /etc/apk/repositories && \
+    echo "https://mirror.yandex.ru/mirrors/alpine/v3.22/community" >> /etc/apk/repositories && \
+    apk update && apk add --no-cache \
     python3 \
     make \
     g++ \
