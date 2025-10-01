@@ -35,8 +35,6 @@
     "@vitejs/plugin-react": "^5.0.0",
     "@yandex/ymaps3-types": "^1.0.17595433",
     "cross-env": "^10.0.0",
-    "electron": "^34.0.1",
-    "electron-builder": "^26.0.12",
     "eslint": "^9.33.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
