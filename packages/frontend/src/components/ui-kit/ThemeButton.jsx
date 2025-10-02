@@ -32,25 +32,25 @@ export const ThemeButton = () => {
   };
 
   return (
-      <div>
-        <Grow in>
-          <Fab
-              color={'primary'}
-              aria-label={'theme'}
-              sx={{
-                position: 'fixed',
-                bottom: {
-                  sm: 16,
-                  xs: 8 * 10,
-                },
-                right: 16
-              }
-              }
-              onClick={changeTheme}
-          >
-            {darkThemeStatus ? <LightModeIcon/> : <DarkModeIcon/>}
-          </Fab>
-        </Grow>
-      </div>
+    <div>
+      <Grow in>
+        <Fab
+          color={'primary'}
+          aria-label={'theme'}
+          sx={{
+            position: 'fixed',
+            bottom: {
+              sm: 16,
+              xs: localStorage.getItem('accessToken') !== null ? 8 * 10 : 8 * 2,
+            },
+            right: 16
+          }
+          }
+          onClick={changeTheme}
+        >
+          {darkThemeStatus ? <LightModeIcon/> : <DarkModeIcon/>}
+        </Fab>
+      </Grow>
+    </div>
   );
 };

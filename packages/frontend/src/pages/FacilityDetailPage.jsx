@@ -21,17 +21,19 @@ import {
   DialogActions,
   Dialog,
   Snackbar,
-  Tab, Grid, TextField, Link
+  Avatar,
+  Tab, Grid, TextField, Link, InputLabel, Select, MenuItem
 } from '@mui/material'
 import {TabContext, TabList, TabPanel} from '@mui/lab'
 import {styled, useTheme} from '@mui/material/styles'
-import {grey, red, green} from '@mui/material/colors'
+import {grey, red, green, blue} from '@mui/material/colors'
 import apiClient from '../apiClient'
 import {
   ChevronLeftOutlined,
-  FileUpload,
-  Refresh,
-  Route
+  FileUploadOutlined,
+  RefreshOutlined,
+  RouteOutlined,
+  PersonAddOutlined
 } from '@mui/icons-material'
 import {Loading} from '../components/ui-kit/Loading'
 
@@ -82,6 +84,17 @@ export const FacilityDetailPage = () => {
 
   const [newDocsData, setNewDocsData] = useState({})
 
+  const [fullScreenImage, setFullScreenImage] = useState(null)
+
+  const [contractors, setContractors] = useState(null)
+
+  const [dCOpen, setDCOpen] = useState(false)
+
+  const [choosedContractor, setChoosedContractor] = useState(null)
+
+  const dCCloseHandler = () => {
+    setDCOpen(false)
+  }
 
   const theme = useTheme()
 
@@ -149,8 +162,16 @@ export const FacilityDetailPage = () => {
     })
   }, [facility])
 
+  const getContractors = async () => {
+    if (localStorage.getItem('role') === 'CUSTOMER') {
+      const res = await apiClient.get('/user')
+      setContractors(res.data.data.contractors)
+    }
+  }
+
   useEffect(() => {
     loadFacility()
+    getContractors()
   }, [])
 
   useEffect(() => {
@@ -405,6 +426,31 @@ export const FacilityDetailPage = () => {
     }))
   }
 
+  const handleContractorSelect = (evt) => {
+    setChoosedContractor(evt.target.value)
+  }
+
+  const chooseContractor = () => {
+    setDCOpen(true)
+  }
+
+  const addContractor = async () => {
+    setLoading(true)
+    try {
+      setLoading(false)
+      const res = apiClient.post(`/facility/addContractorToFacility/${facility.id}`, {
+        contractor: {
+          id: choosedContractor
+        }
+      })
+      loadFacility()
+    } catch (err) {
+      showSnackbar('error', `Возникла непредвиденная ошибка. ${err.response?.data?.error || err.message}`)
+      setLoading(false)
+    }
+    showSnackbar('success', 'Подрядчик успешно добавлен')
+  }
+
   return (
     <>
       <Loading status={loading}/>
@@ -423,6 +469,73 @@ export const FacilityDetailPage = () => {
             {dApplyText}
           </Button>
         </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={dCOpen}
+        onClose={dCCloseHandler}
+      >
+        <DialogContent>
+          <DialogContentText component={'div'}>
+            <FormControl
+              sx={{minWidth: 128}}
+              size={'small'}
+              fullWidth
+            >
+              <InputLabel
+                id={'status-select-label'}
+              >
+                Подрядчики
+              </InputLabel>
+              <Select
+                labelId={'status-select-label'}
+                id={'status-select'}
+                label={'Статус'}
+                onChange={handleContractorSelect}
+                fullWidth
+              >
+                {contractors?.map((el) => (
+                  <MenuItem
+                    value={el.id}>{el.company}, {el.firstName} {el.lastName}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={dCCloseHandler}>Отмена</Button>
+          <Button onClick={addContractor} color={'success'} autoFocus>
+            Назначить
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={Boolean(fullScreenImage)}
+        onClose={() => setFullScreenImage(null)}
+        onClick={() => setFullScreenImage(null)}
+        sx={{'& .MuiDialog-paper': {bgcolor: 'transparent', boxShadow: 'none'}}}
+        fullScreen
+        PaperProps={{
+          sx: {
+            backgroundColor: 'black',
+            margin: 0,
+            width: '100vw',
+            height: '100vh',
+          }
+        }}
+      >
+        <img
+          src={fullScreenImage}
+          alt=""
+          style={{
+            maxWidth: '100vw',
+            maxHeight: '100vh',
+            objectFit: 'contain',
+            margin: 'auto',
+            display: 'block',
+          }}
+        />
       </Dialog>
 
       <Snackbar
@@ -453,10 +566,10 @@ export const FacilityDetailPage = () => {
                   variant={'scrollable'}
                 >
                   <Tab label={'Общая информация'} value={'1'}/>
-                  {facility.listOfWorks.length &&
+                  {facility.listOfWorks.length > 0 &&
                   <Tab label={'Входной контроль'} value={'2'}/>
                   }
-                  <Tab label={'Инспекционная схема'}/>
+                  <Tab label={'Инспекционная схема'} value={'3'}/>
                 </TabList>
               </Box>
               <TabPanel value={'1'} sx={{p: 0, pt: 2}}>
@@ -520,6 +633,7 @@ export const FacilityDetailPage = () => {
                   />
                 </Box>
 
+                {/* Yandex Map */}
                 <Box
                   sx={{
                     border: 1,
@@ -550,7 +664,7 @@ export const FacilityDetailPage = () => {
                         onClick={loadYMap}
                         color={'primary'}
                       >
-                        <Refresh/>
+                        <RefreshOutlined/>
                       </IconButton>
                     </Grid>
                     <Grid item>
@@ -560,16 +674,121 @@ export const FacilityDetailPage = () => {
                         href={`https://yandex.ru/maps/?rtext=${facility.polygon.coordinates[0][0][0][0]},${facility.polygon.coordinates[0][0][0][1]}`}
                         color={'primary'}
                       >
-                        <Route/>
+                        <RouteOutlined/>
                       </IconButton>
                     </Grid>
                   </Grid>
                 </Box>
 
+                {/* Подрядчики */}
+                {
+                  (
+                    localStorage.getItem('role') === 'CUSTOMER' &&
+                    facility.status === 'IN_PROCESS'
+                  ) && (
+                    <Button
+                      sx={{mt: 1}}
+                      startIcon={<PersonAddOutlined/>}
+                      variant={'contained'}
+                      onClick={chooseContractor}
+                      fullWidth
+                    >
+                      Назначить подрядчика
+                    </Button>
+                  )
+                }
+
+                {
+                  facility.user?.length > 0 && (
+                    <>
+                      <Grid
+                        container
+                        sx={{mt: 2}}
+                        direction={'column'}
+                        spacing={1}
+                      >
+                        <Grid item>
+                          <Typography variant={'body1'}>
+                            Подрядчики:
+                          </Typography>
+                        </Grid>
+                        {
+                          facility.user?.map((el) => (
+                            <Grid item>
+                              <Grid
+                                alignItems={'center'}
+                                spacing={1}
+                                container
+                              >
+                                <Grid item>
+                                  <Chip
+                                    variant={'outlined'}
+                                    color={'info'}
+                                    label={`${el.company}, ${el.lastName} ${el.firstName}`}
+                                    avatar={<Avatar
+                                      sx={{backgroundColor: blue[500]}}>{el.lastName[0]}</Avatar>}
+                                    sx={{
+                                      display: {
+                                        sm: 'flex',
+                                        xs: 'none'
+                                      }
+                                    }}
+                                  />
+                                  <Box
+                                    sx={{
+                                      display: {
+                                        sm: 'none',
+                                        xs: 'flex'
+                                      }
+                                    }}
+                                  >
+                                    <Grid
+                                      container
+                                      sx={{width: '100%'}}
+                                      direction={'column'}
+                                      spacing={1}
+                                    >
+                                      <Grid item>
+                                        <Typography variant={'body1'}>
+                                          {el.company}
+                                        </Typography>
+                                      </Grid>
+                                      <Grid item>
+                                        <Typography variant={'body2'}>
+                                          {el.lastName} {el.firstName}
+                                        </Typography>
+                                      </Grid>
+                                    </Grid>
+                                    <Divider/>
+                                  </Box>
+                                </Grid>
+                              </Grid>
+                            </Grid>
+                          ))
+                        }
+                      </Grid>
+                    </>
+                  )
+                }
+
+                <Divider sx={{my: 2}}/>
+
                 {/* Чек-лист */}
+
+                {(localStorage.getItem('role') === 'TECHNICAL_CUSTOMER' && facility.actOfOpening?.status === 'DONE') && (
+                  <Alert>
+                    Акт открытия успешно подтверждён
+                  </Alert>
+                )}
+
+                {(localStorage.getItem('role') === 'TECHNICAL_CUSTOMER' && facility.actOfOpening?.status === 'IN_PROCESS') && (
+                  <Alert severity={'warning'}>
+                    Акт открытия не был отправлен на подтверждение
+                  </Alert>
+                )}
+
                 {facility.actOfOpening?.checkList && (
-                  <Box>
-                    <Divider sx={{my: 2}}/>
+                  <Box sx={{my: 2}}>
                     <Typography
                       variant={'body1'}
                       color={(facility.actOfOpening.status === 'WAITING_APPROVE' || localStorage.getItem('role') !== 'CUSTOMER') ? grey[500] : 'default'}
@@ -640,18 +859,6 @@ export const FacilityDetailPage = () => {
                   </Box>
                 )}
 
-                {(localStorage.getItem('role') === 'TECHNICAL_CUSTOMER' && facility.actOfOpening?.status === 'DONE') && (
-                  <Alert>
-                    Акт открытия успешно подтверждён
-                  </Alert>
-                )}
-
-                {(localStorage.getItem('role') === 'TECHNICAL_CUSTOMER' && facility.actOfOpening?.status === 'IN_PROCESS') && (
-                  <Alert severity={'warning'}>
-                    Акт открытия не был отправлен на подтверждение
-                  </Alert>
-                )}
-
                 {(
                   facility.actOfOpening?.status === 'WAITING_APPROVE' &&
                   localStorage.getItem('role') === 'CUSTOMER'
@@ -681,7 +888,7 @@ export const FacilityDetailPage = () => {
                   </Button>
                 )}
               </TabPanel>
-              {facility.listOfWorks.length &&
+              {facility.listOfWorks.length > 0 &&
               <TabPanel value={'2'}>
                 <FormControl component={'fieldset'} fullWidth>
                   <FormGroup>
@@ -789,7 +996,7 @@ export const FacilityDetailPage = () => {
                               <Button
                                 component={'label'}
                                 variant={'outlined'}
-                                startIcon={<FileUpload/>}
+                                startIcon={<FileUploadOutlined/>}
                                 disabled={loading}
                               >
                                 Добавить материалы
@@ -849,6 +1056,37 @@ export const FacilityDetailPage = () => {
                 </FormControl>
               </TabPanel>
               }
+              <TabPanel value={'3'}>
+                {facility.schema.length > 0 ? (
+                  <Grid
+                    container
+                    spacing={1}
+                    justifyContent={'center'}
+                    alignItems={'center'}
+                  >
+                    {facility.schema.map((el) => {
+                      return (
+                        <Grid item>
+                          <Box
+                            component={'img'}
+                            src={el}
+                            sx={{
+                              width: '100%',
+                              borderRadius: 2,
+                            }}
+                            onClick={() => setFullScreenImage(el)}
+                            style={{cursor: 'zoom-in', maxWidth: '100%'}}
+                          />
+                        </Grid>
+                      )
+                    })}
+                  </Grid>
+                ) : (
+                  <Typography>
+                    Инспекционные схемы отсутствуют
+                  </Typography>
+                )}
+              </TabPanel>
             </TabContext>
           </Paper>
         </Container>

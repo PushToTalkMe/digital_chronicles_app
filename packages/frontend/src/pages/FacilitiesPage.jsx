@@ -91,6 +91,7 @@ export const FacilitiesPage = () => {
     try {
       setLoading(true)
       const res = await apiClient.get('/facility')
+      console.log(res.data.data.facilities)
       setFacilities(res.data.data.facilities)
       setError(null)
     } catch (err) {
@@ -290,7 +291,7 @@ export const FacilitiesPage = () => {
                 </Grid>
                 {filteredFacilities.length === 0 ? (
                     <Grid item>
-                      <Typography>Нет объектов по заданным фильтрам</Typography>
+                      <Typography>Нет объектов</Typography>
                     </Grid>
                 ) : (
                     filteredFacilities.map((facility) => (
