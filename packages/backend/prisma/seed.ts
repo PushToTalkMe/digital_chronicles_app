@@ -170,6 +170,14 @@ const FACILITIES = [
         ].map((polygon) =>
             polygon.map((contour) => contour.map((coord) => coord.reverse()))
         ),
+        schema: [
+            process.env.SERVER_URL
+                ? `${process.env.SERVER_URL}api/file/public/schemas/mira_1.png`
+                : `http://localhost:3000/api/file/public/schemas/mira_1.png`,
+            process.env.SERVER_URL
+                ? `${process.env.SERVER_URL}api/file/public/schemas/mira_2.png`
+                : `http://localhost:3000/api/file/public/schemas/mira_2.png`,
+        ],
         listOfWorks: [
             {
                 title: 'Устройство садового бортового камня в рамках благоустройства территории',
@@ -326,6 +334,14 @@ const FACILITIES = [
         ].map((polygon) =>
             polygon.map((contour) => contour.map((coord) => coord.reverse()))
         ),
+        schema: [
+            process.env.SERVER_URL
+                ? `${process.env.SERVER_URL}api/file/public/schemas/kargopolskaya_1.png`
+                : `http://localhost:3000/api/file/public/schemas/kargopolskaya_1.png`,
+            process.env.SERVER_URL
+                ? `${process.env.SERVER_URL}api/file/public/schemas/kargopolskaya_2.png`
+                : `http://localhost:3000/api/file/public/schemas/kargopolskaya_2.png`,
+        ],
         listOfWorks: [
             {
                 title: 'Устройство садового бортового камня в рамках благоустройства территории',
@@ -479,6 +495,14 @@ const FACILITIES = [
         ].map((polygon) =>
             polygon.map((contour) => contour.map((coord) => coord.reverse()))
         ),
+        schema: [
+            process.env.SERVER_URL
+                ? `${process.env.SERVER_URL}api/file/public/schemas/bestuzhevih_1.png`
+                : `http://localhost:3000/api/file/public/schemas/bestuzhevih_1.png`,
+            process.env.SERVER_URL
+                ? `${process.env.SERVER_URL}api/file/public/schemas/bestuzhevih_2.png`
+                : `http://localhost:3000/api/file/public/schemas/bestuzhevih_2.png`,
+        ],
         listOfWorks: [
             {
                 title: 'Устройство покрытия асфальтобетонного пешеходной дорожки в рамках благоустройства территории',
@@ -681,6 +705,14 @@ const FACILITIES = [
         ].map((polygon) =>
             polygon.map((contour) => contour.map((coord) => coord.reverse()))
         ),
+        schema: [
+            process.env.SERVER_URL
+                ? `${process.env.SERVER_URL}api/file/public/schemas/chelobitevskaya_1.png`
+                : `http://localhost:3000/api/file/public/schemas/chelobitevskaya_1.png`,
+            process.env.SERVER_URL
+                ? `${process.env.SERVER_URL}api/file/public/schemas/chelobitevskaya_2.png`
+                : `http://localhost:3000/api/file/public/schemas/chelobitevskaya_2.png`,
+        ],
         listOfWorks: [
             {
                 title: 'Замена ограждения контейнерной площадки в рамках благоустройства территории',
@@ -810,6 +842,14 @@ const FACILITIES = [
         ].map((polygon) =>
             polygon.map((contour) => contour.map((coord) => coord.reverse()))
         ),
+        schema: [
+            process.env.SERVER_URL
+                ? `${process.env.SERVER_URL}api/file/public/schemas/putevoi_proezd_1.png`
+                : `http://localhost:3000/api/file/public/schemas/putevoi_proezd_1.png`,
+            process.env.SERVER_URL
+                ? `${process.env.SERVER_URL}api/file/public/schemas/putevoi_proezd_2.png`
+                : `http://localhost:3000/api/file/public/schemas/putevoi_proezd_2.png`,
+        ],
         listOfWorks: [
             {
                 title: 'Ремонт покрытия асфальтобетонного проезда в рамках благоустройства территории',
@@ -1013,6 +1053,14 @@ const FACILITIES = [
         ].map((polygon) =>
             polygon.map((contour) => contour.map((coord) => coord.reverse()))
         ),
+        schema: [
+            process.env.SERVER_URL
+                ? `${process.env.SERVER_URL}api/file/public/schemas/flotskaya_1.png`
+                : `http://localhost:3000/api/file/public/schemas/flotskaya_1.png`,
+            process.env.SERVER_URL
+                ? `${process.env.SERVER_URL}api/file/public/schemas/flotskaya_2.png`
+                : `http://localhost:3000/api/file/public/schemas/flotskaya_2.png`,
+        ],
         listOfWorks: [
             {
                 title: 'Ремонт покрытия асфальтобетонного проезда в рамках благоустройства территории',
@@ -1812,6 +1860,14 @@ const FACILITIES = [
         ].map((polygon) =>
             polygon.map((contour) => contour.map((coord) => coord.reverse()))
         ),
+        schema: [
+            process.env.SERVER_URL
+                ? `${process.env.SERVER_URL}api/file/public/schemas/flotskaya_1.png`
+                : `http://localhost:3000/api/file/public/schemas/flotskaya_1.png`,
+            process.env.SERVER_URL
+                ? `${process.env.SERVER_URL}api/file/public/schemas/flotskaya_2.png`
+                : `http://localhost:3000/api/file/public/schemas/flotskaya_2.png`,
+        ],
         listOfWorks: [],
     },
 ];

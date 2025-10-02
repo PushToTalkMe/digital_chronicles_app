@@ -30,6 +30,7 @@ model Facility {
   title String  @default("Объект")
   status StatusFacility
   plannedStartAt    DateTime
+  schema      String[]
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt @default(now())
 
