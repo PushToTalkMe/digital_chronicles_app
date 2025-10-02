@@ -18,6 +18,7 @@ export const BottomNavBar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('accessToken')
+    localStorage.removeItem('role')
     navigate('/login')
   }
 
