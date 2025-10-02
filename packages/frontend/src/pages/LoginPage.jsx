@@ -26,13 +26,13 @@ export const LoginPage = () => {
     try {
       setLoading(true)
       const res = await apiClient.post('/auth/login', {
-          login,
-          password,
-        }, {
-          headers: {
-            'Content-Type': 'application/json'
+            login,
+            password,
+          }, {
+            headers: {
+              'Content-Type': 'application/json'
+            }
           }
-        }
       );
 
       localStorage.setItem('accessToken', res.data.data.token)
@@ -58,105 +58,106 @@ export const LoginPage = () => {
   }
 
   return (
-    <>
-      <Snackbar
-        anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
-        open={sbOpen}
-        autoHideDuration={6000}
-        onClose={handleCloseError}
-      >
+      <>
+        <Snackbar
+            anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
+            open={sbOpen}
+            autoHideDuration={6000}
+            onClose={handleCloseError}
+        >
 
-        <Alert
-          onClose={handleCloseError}
-          severity={sbColor}
-          sx={{width: '100%'}}
+          <Alert
+              onClose={handleCloseError}
+              severity={sbColor}
+              sx={{width: '100%'}}
+          >
+            {message}
+          </Alert>
+        </Snackbar>
+        <Grow
+            in
         >
-          {message}
-        </Alert>
-      </Snackbar>
-      <Grow
-        in
-      >
-        <Paper
-          sx={{p: 4, my: 2}}
-        >
-          <Grid
-            container
-            justifyContent={'center'}
-            alignItems={'center'}
-            flexDirection={'column'}
-            spacing={2}
+          <Paper
+              sx={{p: 4, my: 2}}
           >
             <Grid
-              item
+                container
+                justifyContent={'center'}
+                alignItems={'center'}
+                flexDirection={'column'}
+                spacing={2}
             >
-              <ConstructionOutlined
-                color={'primary'}
-                fontSize={'large'}
-              />
-            </Grid>
-            <Grid
-              item
-            >
-              <Typography
-                variant={'h5'}
-                align={'center'}
+              <Grid
+                  item
               >
-                Войдите в свой аккаунт
-              </Typography>
-              <Typography
-                variant={'caption'}
-                align={'center'}
-                color={grey[500]}
+                <ConstructionOutlined
+                    color={'primary'}
+                    fontSize={'large'}
+                />
+              </Grid>
+              <Grid
+                  item
               >
-                Для управления строительными работами
-              </Typography>
-            </Grid>
-            <Grid
-              item
-            >
-              <TextField
-                label={'Логин'}
-                value={login}
-                onChange={(e) => setLogin(e.target.value)}
-                placeholder={'Ваш логин'}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') loginHandler().then(() => false)
-                }}
-                fullWidth
-                required
-              />
-            </Grid>
-            <Grid
-              item
-            >
-              <TextField
-                label={'Пароль'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder={'Ваш пароль'}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') loginHandler().then(() => false)
-                }}
-                type={'password'}
-                fullWidth
-                required
-              />
-            </Grid>
-            <Grid
-              item
-            >
-              <Button
-                variant={'contained'}
-                fullWidth
-                onClick={loginHandler}
+                <Typography
+                    variant={'h5'}
+                    align={'center'}
+                >
+                  Войдите в свой аккаунт
+                </Typography>
+                <Typography
+                    variant={'caption'}
+                    align={'center'}
+                    color={grey[500]}
+                >
+                  Для управления строительными работами
+                </Typography>
+              </Grid>
+              <Grid
+                  item
               >
-                Войти
-              </Button>
+                <TextField
+                    label={'Логин'}
+                    value={login}
+                    onChange={(e) => setLogin(e.target.value)}
+                    placeholder={'Ваш логин'}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') loginHandler().then(() => false)
+                    }}
+                    fullWidth
+                    required
+                />
+              </Grid>
+              <Grid
+                  item
+              >
+                <TextField
+                    label={'Пароль'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder={'Ваш пароль'}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') loginHandler().then(() => false)
+                    }}
+                    type={'password'}
+                    fullWidth
+                    required
+                />
+              </Grid>
+              <Grid
+                  item
+              >
+                <Button
+                    variant={'contained'}
+                    fullWidth
+                    onClick={loginHandler}
+                    loading={loading}
+                >
+                  Войти
+                </Button>
+              </Grid>
             </Grid>
-          </Grid>
-        </Paper>
-      </Grow>
-    </>
+          </Paper>
+        </Grow>
+      </>
   )
 }
