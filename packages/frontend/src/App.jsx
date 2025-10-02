@@ -127,6 +127,7 @@ function App() {
                   sx={{
                     bgcolor: (theme) => theme.palette.background.default,
                     minHeight: '100vh',
+                    pt: 8,
                     pb: 8
                   }}
               >

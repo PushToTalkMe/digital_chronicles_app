@@ -12,7 +12,9 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Divider
+  Divider,
+  Grid,
+  Avatar
 } from '@mui/material'
 import {
   MenuOutlined,
@@ -21,7 +23,20 @@ import {
   LogoutOutlined,
   NotificationsOutlined
 } from '@mui/icons-material'
+import {red, green, blue} from '@mui/material/colors'
 import {Link as RouterLink, useNavigate, useLocation} from 'react-router-dom'
+
+const roles = {
+  'CUSTOMER': 'Заказчик',
+  'TECHNICAL_CUSTOMER': 'Инспектор',
+  'CONTRACTOR': 'Подрядчик'
+}
+
+const role_color = {
+  'CUSTOMER': blue[400],
+  'TECHNICAL_CUSTOMER': red[400],
+  'CONTRACTOR': green[400]
+}
 
 export const TopNavBar = () => {
 
@@ -120,7 +135,7 @@ export const TopNavBar = () => {
           </Box>
         </Drawer>
         <AppBar
-            position={'static'}
+            position={'fixed'}
             color={'inherit'}
             elevation={2}
             sx={{
@@ -129,27 +144,68 @@ export const TopNavBar = () => {
         >
           <Container>
             <Toolbar>
-              <IconButton
-                  size={'small'}
-                  edge={'start'}
-                  color={'inherit'}
-                  aria-label={'menu'}
-                  sx={{
-                    mr: 2,
-                    display: {
-                      sm: 'flex',
-                      xs: 'none'
-                    }
-                  }}
-                  onClick={toggleDrawer(true)}
+              <Grid
+                  justifyContent={'space-between'}
+                  alignItems={'center'}
+                  direction={'row'}
+                  sx={{width: '100%'}}
+                  container
               >
-                <MenuOutlined/>
-              </IconButton>
-              <Typography
-                  variant={'h6'}
-              >
-                {detectPageTitle()}
-              </Typography>
+                <Grid
+                    item
+                    sx={{
+                      display: {
+                        sm: 'flex',
+                        xs: 'none'
+                      }
+                    }}
+                >
+                  <IconButton
+                      size={'small'}
+                      edge={'start'}
+                      color={'inherit'}
+                      aria-label={'menu'}
+                      sx={{
+                        mr: 2,
+                      }}
+                      onClick={toggleDrawer(true)}
+                  >
+                    <MenuOutlined/>
+                  </IconButton>
+                </Grid>
+                <Grid item>
+                  <Typography
+                      variant={'h6'}
+                  >
+                    {detectPageTitle()}
+                  </Typography>
+                </Grid>
+                {localStorage.getItem('role') !== null &&
+                <Grid item>
+                  <Grid
+                      container
+                      alignItems={'center'}
+                      spacing={1}
+                  >
+                    <Grid item>
+                      <Typography>
+                        {roles[localStorage.getItem('role')]}
+                      </Typography>
+                    </Grid>
+                    <Grid item>
+                      <Avatar
+                          sx={{
+                            backgroundColor: role_color[localStorage.getItem('role')],
+                            width: 32,
+                            height: 32,
+                          }}>
+                        {roles[localStorage.getItem('role')][0]}
+                      </Avatar>
+                    </Grid>
+                  </Grid>
+                </Grid>
+                }
+              </Grid>
             </Toolbar>
           </Container>
         </AppBar>
