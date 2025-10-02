@@ -569,7 +569,7 @@ export const FacilityDetailPage = () => {
                   {facility.listOfWorks.length > 0 &&
                   <Tab label={'Входной контроль'} value={'2'}/>
                   }
-                  <Tab label={'Инспекционная схема'} value={'3'}/>
+                  <Tab label={'Исполнительная схема'} value={'3'}/>
                 </TabList>
               </Box>
               <TabPanel value={'1'} sx={{p: 0, pt: 2}}>
@@ -1083,7 +1083,7 @@ export const FacilityDetailPage = () => {
                   </Grid>
                 ) : (
                   <Typography>
-                    Инспекционные схемы отсутствуют
+                    Исполнительные схемы отсутствуют
                   </Typography>
                 )}
               </TabPanel>
