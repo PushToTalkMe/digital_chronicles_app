@@ -18,8 +18,7 @@ export const ThemeButton = () => {
   const {
     toDarkTheme,
     toLightTheme,
-    darkThemeStatus,
-    accessToken
+    darkThemeStatus
   } = useContext(Context)
 
   const changeTheme = () => {

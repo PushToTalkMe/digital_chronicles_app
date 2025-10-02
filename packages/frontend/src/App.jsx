@@ -62,7 +62,7 @@ function App() {
   }, [savedTheme])
 
   const [darkThemeStatus, setDarkThemeStatus] = useState(
-      savedTheme === 'dark' || (savedTheme === null && prefersDarkMode),
+    savedTheme === 'dark' || (savedTheme === null && prefersDarkMode),
   )
 
   const lightTheme = createTheme({
@@ -105,68 +105,66 @@ function App() {
   })
 
   const theme = darkThemeStatus ? darkTheme : lightTheme
-  const accessToken = localStorage.getItem('accessToken')
 
   const [drawerStatus, setDrawerStatus] = useState(false)
 
   return (
-      <Router>
-        <Fragment>
-          <Context.Provider
-              value={{
-                toDarkTheme,
-                toLightTheme,
-                darkThemeStatus,
-                accessToken,
-                drawerStatus,
-                setDrawerStatus
+    <Router>
+      <Fragment>
+        <Context.Provider
+          value={{
+            toDarkTheme,
+            toLightTheme,
+            darkThemeStatus,
+            drawerStatus,
+            setDrawerStatus
+          }}
+        >
+          <ThemeProvider theme={theme}>
+            <Box
+              sx={{
+                bgcolor: (theme) => theme.palette.background.default,
+                minHeight: '100vh',
+                pt: 8,
+                pb: 8
               }}
-          >
-            <ThemeProvider theme={theme}>
-              <Box
-                  sx={{
-                    bgcolor: (theme) => theme.palette.background.default,
-                    minHeight: '100vh',
-                    pt: 8,
-                    pb: 8
-                  }}
+            >
+              <TopNavBar/>
+              <Container
+                sx={{minHeight: '90vh'}}
               >
-                <TopNavBar/>
-                <Container
-                    sx={{minHeight: '90vh'}}
-                >
-                  <Routes>
-                    <Route path={'/login'} element={<LoginPage/>}/>
-                    <Route element={<PrivateRoute/>}>
-                      <Route
-                          path={'/login'} element={<LoginPage/>}
-                      />
-                      <Route
-                          path={'/facility/:id'}
-                          element={<FacilityDetailPage/>}
-                      />
-                      <Route
-                          path={'/'} element={<FacilitiesPage/>}
-                      />
-                      <Route
-                          path={'/tasks'} element={<TasksPage/>}
-                      />
-                      <Route
-                          path={'/profile'} element={<ProfilePage/>}
-                      />
-                    </Route>
-                  </Routes>
-                </Container>
-                {accessToken &&
-                <BottomNavBar/>
-                }
-                <ThemeButton/>
-                <BackButton/>
-              </Box>
-            </ThemeProvider>
-          </Context.Provider>
-        </Fragment>
-      </Router>
+                <Routes>
+                  <Route path={'/login'} element={<LoginPage/>}/>
+                  <Route element={<PrivateRoute/>}>
+                    <Route
+                      path={'/login'} element={<LoginPage/>}
+                    />
+                    <Route
+                      path={'/facility/:id'}
+                      element={<FacilityDetailPage/>}
+                    />
+                    <Route
+                      path={'/'} element={<FacilitiesPage/>}
+                    />
+                    <Route
+                      path={'/tasks'} element={<TasksPage/>}
+                    />
+                    <Route
+                      path={'/profile'} element={<ProfilePage/>}
+                    />
+                  </Route>
+                </Routes>
+              </Container>
+              {localStorage.getItem('accessToken') !== null &&
+              <BottomNavBar/>
+              }
+              <ThemeButton/>
+              <BackButton/>
+            </Box>
+          </ThemeProvider>
+        </Context.Provider>
+      </Fragment>
+    </Router>
   )
 }
 
