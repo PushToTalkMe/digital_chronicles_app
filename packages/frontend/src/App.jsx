@@ -31,6 +31,10 @@ import {PrivateRoute} from './privateRoute'
  * @constructor
  */
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    localStorage.getItem('accessToken') !== null
+  );
+
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
   const savedTheme = localStorage.getItem('theme')
 
@@ -60,6 +64,15 @@ function App() {
       toDarkTheme()
     }
   }, [savedTheme])
+
+  useEffect(() => {
+    if (
+      localStorage.getItem('accessToken') === null &&
+      localStorage.getItem('role') !== null
+    ) {
+      localStorage.removeItem('role')
+    }
+  }, [])
 
   const [darkThemeStatus, setDarkThemeStatus] = useState(
     savedTheme === 'dark' || (savedTheme === null && prefersDarkMode),
@@ -117,7 +130,8 @@ function App() {
             toLightTheme,
             darkThemeStatus,
             drawerStatus,
-            setDrawerStatus
+            setDrawerStatus,
+            setIsAuthenticated,
           }}
         >
           <ThemeProvider theme={theme}>
@@ -155,9 +169,7 @@ function App() {
                   </Route>
                 </Routes>
               </Container>
-              {localStorage.getItem('accessToken') !== null &&
-              <BottomNavBar/>
-              }
+              {isAuthenticated && <BottomNavBar/>}
               <ThemeButton/>
               <BackButton/>
             </Box>

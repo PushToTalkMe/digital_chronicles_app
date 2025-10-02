@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useContext} from 'react'
 import {
   Grid, Paper, TextField, Typography, Button, Grow, Snackbar, Alert
 } from '@mui/material'
@@ -9,6 +9,8 @@ import {
 import apiClient from '../apiClient'
 import {useNavigate} from 'react-router-dom'
 
+import {Context} from '../context'
+
 export const LoginPage = () => {
   const [login, setLogin] = useState('')
   const [password, setPassword] = useState('')
@@ -17,6 +19,7 @@ export const LoginPage = () => {
   const [sbColor, setSbColor] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  const {setIsAuthenticated} = useContext(Context);
 
   const loginHandler = async () => {
     if (!login || !password) {
@@ -38,6 +41,7 @@ export const LoginPage = () => {
       localStorage.setItem('accessToken', res.data.data.token)
       localStorage.setItem('role', res.data.data.user.role)
 
+      setIsAuthenticated(true);
       setLoading(false)
       setSbColor('success')
       setMessage('Успешный вход')
