@@ -4,18 +4,14 @@ import { Server } from 'http';
 import { HttpServerConfig } from '@config';
 import { ServersManagerState } from '@servers/manager/servers.manager.interface';
 import { apiRoutes } from './routes';
-import { PrismaClient } from '@prisma/client';
-import { OcrServiceFactory } from '@services/ocr';
 
 export class HttpServer {
     private readonly app: Express;
     private readonly config: HttpServerConfig;
-    private readonly database: PrismaClient;
     private server: Server | null = null;
 
-    constructor(config: HttpServerConfig, database: PrismaClient) {
+    constructor(config: HttpServerConfig) {
         this.config = config;
-        this.database = database;
         this.app = express();
         this.setupMiddleware();
     }
@@ -38,15 +34,6 @@ export class HttpServer {
         this.app.use(
             express.urlencoded({ extended: true, limit: this.config.bodyLimit })
         );
-        this.app.use((req, _res, next) => {
-            req.database = this.database;
-            next();
-        });
-        const ocr = await this.setupOcr();
-        this.app.use((req, _res, next) => {
-            req.ocr = ocr;
-            next();
-        });
         this.app.use('/api', apiRoutes);
     }
 
@@ -71,10 +58,5 @@ export class HttpServer {
                 reject(error);
             }
         });
-    }
-
-    private async setupOcr() {
-        const ocr = await new OcrServiceFactory().generate();
-        return ocr;
     }
 }

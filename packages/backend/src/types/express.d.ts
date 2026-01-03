@@ -1,12 +1,11 @@
 import { Request } from 'express';
-import { PrismaClient, User, UserRole } from '@prisma/client';
 import { OcrService } from '@services/ocr';
 
 declare global {
     namespace Express {
         interface Request {
-            database: PrismaClient;
-            ocr: OcrService;
+            // database: PrismaClient;
+            // ocr: OcrService;
             authenticatedUser?: AuthenticatedUser;
             locationUser?: {
                 lat: number;
@@ -31,5 +30,4 @@ export interface GpsVerificatedRequest extends AuthenticatedRequest {
 
 export interface AuthenticatedUser {
     id: string;
-    role: UserRole;
 }

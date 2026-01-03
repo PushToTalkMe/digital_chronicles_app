@@ -1,4 +1,3 @@
-import { UserRole } from '@prisma/client';
 import { Request, Response } from 'express';
 
 export class ApiController {
@@ -25,7 +24,6 @@ export class ApiController {
                                 user: {
                                     id: 'string',
                                     login: 'string',
-                                    role: UserRole,
                                 },
                                 token: 'string',
                                 expiresAt: 'Date',
@@ -44,7 +42,6 @@ export class ApiController {
                                 user: {
                                     id: 'string',
                                     login: 'string',
-                                    role: UserRole,
                                 },
                                 token: 'string',
                                 expiresAt: 'Date',
