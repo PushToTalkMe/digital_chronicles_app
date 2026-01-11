@@ -1,31 +1,23 @@
 import * as jwt from 'jsonwebtoken';
 import { JwtPayload, TokenPair } from './jwt.interface';
 import { CONFIG } from '@config';
-import { PrismaClient, User } from '@prisma/client';
 
 export class JwtService {
     constructor() {}
 
-    generateAccessToken(user: User): string {
-        const payload: JwtPayload = {
-            userId: user.id,
-            login: user.login,
-            role: user.role,
-            type: 'access',
-        };
-
-        return jwt.sign(payload, CONFIG.jwt.secret, {
+    generateAccessToken(): string {
+        return jwt.sign('', CONFIG.jwt.secret, {
             expiresIn: CONFIG.jwt.expiresIn,
             issuer: 'digital_chronicles_app',
-            audience: user.role,
+            audience: '',
         });
     }
 
-    generateRefreshToken(user: User, rememberMe: boolean = false): string {
+    generateRefreshToken(_user: null, rememberMe: boolean = false): string {
         const payload: JwtPayload = {
-            userId: user.id,
-            login: user.login,
-            role: user.role,
+            userId: '',
+            login: '',
+            role: '',
             type: 'refresh',
         };
 
@@ -36,12 +28,12 @@ export class JwtService {
         return jwt.sign(payload, CONFIG.jwt.refreshSecret, {
             expiresIn,
             issuer: 'digital_chronicles_app',
-            audience: user.role,
+            audience: '',
         });
     }
 
-    generateTokenPair(user: User, rememberMe: boolean = false): TokenPair {
-        const accessToken = this.generateAccessToken(user);
+    generateTokenPair(user: null, rememberMe: boolean = false): TokenPair {
+        const accessToken = this.generateAccessToken();
         const refreshToken = this.generateRefreshToken(user, rememberMe);
 
         return {
@@ -89,10 +81,10 @@ export class JwtService {
     }
 
     async refreshAccessToken(
-        database: PrismaClient,
+        _database: undefined,
         refreshToken: string
     ): Promise<{
-        user: User;
+        user: null;
         accessToken: string;
         expiresAt: Date | null;
     } | null> {
@@ -102,20 +94,10 @@ export class JwtService {
                 return null;
             }
 
-            const userRecord = await database.user.findUnique({
-                where: { id: payload.userId },
-            });
-
-            if (!userRecord) {
-                return null;
-            }
-
-            const accessToken = this.generateAccessToken(userRecord);
-
             return {
-                user: userRecord,
-                accessToken,
-                expiresAt: this.getTokenExpirationDate(accessToken),
+                user: null,
+                accessToken: '',
+                expiresAt: this.getTokenExpirationDate(''),
             };
         } catch (error) {
             return null;

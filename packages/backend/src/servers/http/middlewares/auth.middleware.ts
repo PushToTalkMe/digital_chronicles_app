@@ -11,7 +11,7 @@ export class AuthMiddleware {
     public authenticate = async (
         req: Request,
         res: Response,
-        next: NextFunction
+        _next: NextFunction
     ): Promise<void> => {
         try {
             const authHeader = req.headers.authorization;
@@ -34,24 +34,10 @@ export class AuthMiddleware {
                 return;
             }
 
-            const userRecord = await req.database.user.findUnique({
-                where: { id: payload.userId },
+            res.status(404).json({
+                success: false,
+                error: 'Пользователь не найден',
             });
-
-            if (!userRecord) {
-                res.status(404).json({
-                    success: false,
-                    error: 'Пользователь не найден',
-                });
-                return;
-            }
-
-            req.authenticatedUser = {
-                id: userRecord.id,
-                role: userRecord.role,
-            };
-
-            next();
         } catch (error) {
             res.status(500).json({
                 success: false,
